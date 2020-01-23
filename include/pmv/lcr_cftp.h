@@ -27,6 +27,7 @@
  * PROTOTYPE DES FONCTIONS
  * ************************************* */
 INT lcr_cftp (INT, INT, INT, STRING, INT, struct usr_ztf *, INT, INT *);
+INT lcr_cftp_ori (INT, INT, INT, STRING, INT, struct usr_ztf *, INT, INT *);
 void lcr_cftp_init (bool);
 void lcr_cftp_arborescence (void);
 

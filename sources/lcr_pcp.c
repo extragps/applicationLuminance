@@ -204,6 +204,9 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	} else if (0==strncmp(&buffer[i],  "CFES", 4))
 	{
 		config = lcr_cfes(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
+	} else if (0==strncmp(&buffer[i],  "CFTP2", strlen("CFTP2")))
+	{
+		config = lcr_cftp_ori(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
 	} else if (0==strncmp(&buffer[i],  "CFTP", 4))
 	{
 		config = lcr_cftp(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);

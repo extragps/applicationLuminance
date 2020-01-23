@@ -595,6 +595,137 @@ INT lcr_cftp(INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_
 	/* si on est pas en fin de message, on continue l'analyse */
 	if (i < lg_mess)
 	{
+		x01_cptr.erreur = CPTRD_PROTOCOLE;
+	}
+
+	/* si on a pas trouve d'erreur */
+	if (x01_cptr.erreur == CPTRD_OK)
+	{
+		printDebug("Val  trac indTopo pour caisson 2 %d\n", pip_cf_caisson[1].indexTopo);
+		/* on renvoie la configuration */
+		j = 0;
+		if (!flag)
+		{
+			bool premier_b=true;
+			/* on initialise le numero de bloc de reponse */
+			fini = FALSE;
+
+			/* tous les panneaux */
+			i = 0;
+			while ((!fini) && (i < pip_nb_module))
+			{
+				T_pip_cf_module *module = &pip_cf_module[i];
+				k = module->num_caisson;
+				while (k < module->num_caisson + module->nb_caisson)
+				{
+					j += sprintf(&buffer[j], (STRING) "%sCFTP %s%d.%d",(premier_b?"":"\n\r"), LCR_CFTP_MODULE, (INT) module->id_module,
+							(INT) pip_cf_caisson[k].caisson);
+					premier_b=false;
+					switch (pip_cf_caisson[k].type)
+					{
+					case TYPE_ALPHA:
+						/* le type de panneau */
+						j += sprintf(&buffer[j], " PI=MUSA1 PS=1.%d.%d.1", 	(INT) pip_cf_caisson[k].caisson-1, (INT) pip_cf_caisson[k].nb_car);
+						break;
+
+					case TYPE_DELEST:
+						/* le type de panneau */
+						j += sprintf(&buffer[j], " PI=DEL%s","");
+						break;
+					}
+
+					switch (pip_cf_caisson[k].type)
+					{
+
+					case TYPE_ALPHA:
+						/* le type de panneau */
+						/* pour les caracteres constituants le caisson */
+						j += sprintf(&buffer[j], " %s", LCR_CFTP_CARTE);
+						l = pip_cf_caisson[k].num_car;
+						if (0 != pip_cf_caisson[k].nb_car)
+						{
+							while (l < pip_cf_caisson[k].num_car + pip_cf_caisson[k].nb_car)
+							{
+								if (j >= 150)
+								{
+									tedi_send_bloc(las, mode, buffer, j, *bloc, FALSE, pt_mess);
+									*bloc = ((*bloc) + 1) % 10;
+									j = 0;
+
+									if (vct_IT[las])
+										fini = TRUE;
+								}
+
+								j += sprintf(&buffer[j], "%ld",configGetAdresseAfficheur(l) );
+								if (-1 != configGetSortieAfficheur(l))
+								{
+									j += sprintf(&buffer[j], ".%ld", configGetSortieAfficheur(l));
+								}
+								j += sprintf(&buffer[j], "/");
+								/* le caractere suivant */
+								l++;
+							}
+							/* On supprime le dernier caractere / */
+							j--;
+						}
+						break;
+					}
+
+					/* le caisson suivant */
+					k++;
+				}
+				/* le module suivant */
+				i++;
+			}
+			if ((j >= 0) && (!fini))
+			{
+				if (TRUE == flg_fin)
+				{
+					buffer[j++] = '\n';
+					buffer[j++] = '\r';
+				}
+				tedi_send_bloc(las, mode, buffer, j, *bloc, (TRUE == flg_fin ? FALSE : TRUE), pt_mess);
+				*bloc = ((*bloc) + 1) % 10;
+				j = 0;
+
+				if (vct_IT[las])
+					fini = TRUE;
+			}
+		} else
+		{
+			j = sprintf(buffer, "");
+			if (TRUE == flg_fin)
+			{
+				buffer[j++] = '\n';
+				buffer[j++] = '\r';
+			}
+
+			tedi_send_bloc(las, mode, buffer, j, *bloc, (TRUE == flg_fin ? FALSE : TRUE), pt_mess);
+		}
+		printDebug("Val fin indTopo pour caisson 2 %d\n", pip_cf_caisson[1].indexTopo);
+	} else
+	{
+		config = FALSE;
+		tedi_erreur(las, mode);
+	}
+	return config;
+}
+
+INT lcr_cftp_ori(INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_ztf * pt_mess, INT flg_fin, INT * bloc)
+{
+	INT i, j, k, l;
+	INT fini;
+	BYTE flag = FALSE;
+	INT config = FALSE;
+
+	x01_cptr.erreur = CPTRD_OK;
+
+	/* on se place apres le nom de la commande */
+	i = position + 5;
+
+	/* si on est pas en fin de message, on continue l'analyse */
+	if (i < lg_mess)
+	{
 		if (i < lg_mess)
 		{
 			char *ptCour = (char *) &buffer[i];
@@ -653,7 +784,7 @@ INT lcr_cftp(INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_
 			fini = FALSE;
 
 			if (position == 0)
-				j += sprintf(&buffer[j], "CFTP");
+				j += sprintf(&buffer[j], "CFTP2");
 			else
 				j += sprintf(&buffer[j], "TST CFTP");
 
