@@ -53,8 +53,9 @@ typedef struct T_lcr_util_buffer
  * PROTOTYPE DES FONCTIONS
  * ********************************	*/
 
-void tst_send_bloc (INT, INT, STRING, INT *, INT *, INT, T_usr_ztf *,
-                    char *, ...);
+void tst_send_bloc (INT, INT, STRING, INT *, INT *, INT, T_usr_ztf *, char *, ...);
+void tst_send_flush(INT, INT, STRING, INT *, INT *, INT, struct usr_ztf *);
+
 char *tst_passe_blanc (char *, int, int *);
 char *tst_passe_slash (char *, int, int *);
 char *tst_passe_egale (char *, int, int *);

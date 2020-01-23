@@ -29,6 +29,7 @@ int lcr_tst_eth(INT las,INT mode,INT lg_mess,STRING buffer,INT position, struct 
 int lcr_tst_debug(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess);
 void lcr_tst_cnf(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess);
 void lcr_cmd_tst_print_version(void);
+INT lcr_tst_cfsp(INT ,INT ,INT ,STRING ,INT , T_usr_ztf *, INT flg_fin, INT *bloc);
 
 #endif
 

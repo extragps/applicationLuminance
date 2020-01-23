@@ -625,7 +625,7 @@ INT lcr_cftp(INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_
 					{
 					case TYPE_ALPHA:
 						/* le type de panneau */
-						j += sprintf(&buffer[j], " PI=MUSA1 PS=1.%d.%d.1", 	(INT) pip_cf_caisson[k].caisson-1, (INT) pip_cf_caisson[k].nb_car);
+						j += sprintf(&buffer[j], " PI=MUSA1 PS=1.%d.%d.1 BUS=COM485/0", 	(INT) pip_cf_caisson[k].caisson-1, (INT) pip_cf_caisson[k].nb_car);
 						break;
 
 					case TYPE_DELEST:

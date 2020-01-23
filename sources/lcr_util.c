@@ -270,6 +270,15 @@ int lcr_util_buffer_lire_nb_car(T_lcr_util_buffer * buf)
 	return (buf->nbCar);
 }
 
+void tst_send_flush(INT las, INT mode, STRING pt_buff, INT *nbCar, INT *bloc, INT der_blk, struct usr_ztf *pt_mess)
+{
+		tedi_send_bloc(las, mode, pt_buff, *nbCar, *bloc, der_blk, pt_mess);
+		if (++(*bloc) >= 10) {
+			*bloc = 0;
+		}
+		*nbCar = 0;
+}
+
 /* --------------------------------
  * tst_send_bloc
  * =============

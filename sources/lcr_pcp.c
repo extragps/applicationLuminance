@@ -134,6 +134,11 @@ static VOID protege(INT, struct usr_ztf *);
  /                     lg_mess : nombre de caracteres du message recu          /
  /                     buffer  : adresse du buffer de la commande recue        /
  /-------------------------------------------------------------------------DOC*/
+
+static bool _chaineDebutePar(STRING chaine,STRING prefixe) {
+	return 0==strncmp(chaine,prefixe,strlen(prefixe));
+}
+
 static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, struct usr_ztf *pt_mess)
 {
 	INT i; /* indice de lecture du buffer  */
@@ -225,6 +230,10 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	} else if (0==strncmp(&buffer[i],  "TST SCC", 7))
 	{
 		config = lcr_tst_sc_pmv(las, mode, nbcar, buffer, i, pt_mess);
+	}
+	else if (dv1_scmp(&buffer[i], (STRING) "TST CFSP", strlen("TST_CFSP")))
+	{
+		config = lcr_tst_cfsp(las, mode, nbcar, buffer, i, pt_mess,FALSE,&bloc);
 	} else if (0==strncmp(&buffer[i], "PE",2) || 0==strncmp(&buffer[i], "PS", 2))
 	{
 
@@ -273,6 +282,9 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	} else if (0==strncmp(&buffer[i],  "TST CNF", strlen("TST_CNF")))
 	{
 		lcr_tst_cnf(las, mode, nbcar, buffer, i, pt_mess);
+	} else if (_chaineDebutePar(&buffer[i],  "TST VERSION"))
+	{
+		lcr_tst_version(las, mode, nbcar, buffer, i, pt_mess,FALSE,&bloc);
 	} else if (0==strncmp(&buffer[i],  "TST ", strlen("TST_")))
 	{
 		/* cette commande est protegee */
@@ -301,10 +313,13 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	{
 		config = cf6_st_al(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
 		vct_ST_TR &= ~STATUS_TR_ALERTE;
-	} else if (0==strncmp(&buffer[i],  "ST ERI", 6))
+	} else if (_chaineDebutePar(&buffer[i],  "ST DBG"))
+	{
+		lcr_st_dbg(las, mode, nbcar, buffer, i, pt_mess);
+	} else if (_chaineDebutePar(&buffer[i],  "ST ERI"))
 	{
 		lcr_st_eri(las, mode, nbcar, buffer, i, pt_mess);
-	} else if (0==strncmp(&buffer[i],  "ST BTR", 6))
+	} else if (_chaineDebutePar(&buffer[i],  "ST BTR"))
 	{
 		config = lcr_st_btr(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
 	} else if (0==strncmp(&buffer[i],  "ST EDF", 6))

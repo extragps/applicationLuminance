@@ -83,6 +83,7 @@ $(SOURCES)/lcr_cfid.c \
 $(SOURCES)/lcr_ident.c \
 $(SOURCES)/lcr_pcp.c \
 $(SOURCES)/lcr_st_eri.c \
+$(SOURCES)/lcr_st_dbg.c \
 $(SOURCES)/lcr_st_lcom.c \
 $(SOURCES)/lcr_st_ovf.c \
 $(SOURCES)/lcr_st_ver.c \
@@ -92,6 +93,7 @@ $(SOURCES)/lcr_trace.c \
 $(SOURCES)/lcr_tst_cnf.c \
 $(SOURCES)/lcr_tst_debug.c \
 $(SOURCES)/lcr_tst_sc.c \
+$(SOURCES)/lcr_tst_cfsp.c \
 $(SOURCES)/lcr_util.c \
 $(SOURCES)/mgpLib.c \
 $(SOURCES)/mon_debug.c \

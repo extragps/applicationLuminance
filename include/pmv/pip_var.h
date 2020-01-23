@@ -1,4 +1,5 @@
-
+#ifndef _PIP_VAR_H
+#define _PIP_VAR_H
 /* configuration des modules alphanumeriques  */
 extern UINT pip_nb_module;
 extern struct pip_cf_module pip_cf_module[];
@@ -77,3 +78,5 @@ extern BYTE pip_nb_panneau;
 extern BYTE pip_nb_caisson_liste;
 extern struct pip_panneau pip_panneau[];
 extern BYTE pip_liste_caisson[];
+
+#endif

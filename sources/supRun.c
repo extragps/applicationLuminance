@@ -197,154 +197,135 @@ void supIncrement (int numero)
  * tache de gestion du chien de garde.
  * --------------------------------	*/
 
-int supRun (T_supGestion * pGes, int typeBoot)
-{                                      /* --------------------------------
-                                        * DECLARATION DES VARIABLES
-                                        * --------------------------------     */
-  int indice;
-  int retour = OK;
-  int notFin = 1;
-  unsigned long tickCour=ktickGetCurrent();
-  unsigned long tickLast=tickCour;
-  for (indice = 0; indice < SUP_MAX_TACHE; indice++)
-    {
-      perfInit (&table[indice]);
-    }
-  perfInit (&total);
-  perfInit (&reste);
+int supRun(T_supGestion *pGes, int typeBoot) { /* --------------------------------
+ * DECLARATION DES VARIABLES
+ * --------------------------------     */
+	int indice;
+	int retour = OK;
+	int notFin = 1;
+	unsigned long tickCour = ktickGetCurrent();
+	unsigned long tickLast = tickCour;
+	for (indice = 0; indice < SUP_MAX_TACHE; indice++) {
+		perfInit(&table[indice]);
+	}
+	perfInit(&total);
+	perfInit(&reste);
 
-  /* Attention de ne pas declencher le
-   * WatchDog.
-   */
-  perfDemarrer (&total);
-  while (notFin)
-    {
-      /* si les taches sont en fonctionne-
-       * ment, on les lance les unes apres
-       * les autres.  */
-      perfArreter (&total);
-      perfDemarrer (&total);
-      if (1 == supRunLireEtat ())
-        {
-          for (indice = 0; indice < pGes->nbTache; indice++)
-            {
-              T_supDescTache *tache = &pGes->Tache[indice];
-              if (tache->sequence)
-                {
-                  perfDemarrer (&table[indice]);
-                  retour = semSignal (tache->monVersTac);
-                  if (retour == ERROR)
-                    {
-                      if (tache->monVersTac == NULL)
-                        {
-                          printDebug ("Le semaphore a ete supprime\n");
-                        }
-                      else
-                        {
-                          return ERROR;
-                        }
-                    }
+	/* Attention de ne pas declencher le
+	 * WatchDog.
+	 */
+	perfDemarrer(&total);
+
+	if (1 == typeBoot) {
+		supRunDemarrer();
+	}
+
+	while (notFin) {
+		/* si les taches sont en fonctionne-
+		 * ment, on les lance les unes apres
+		 * les autres.  */
+		perfArreter(&total);
+		perfDemarrer(&total);
+		if (1 == supRunLireEtat()) {
+			for (indice = 0; indice < pGes->nbTache; indice++) {
+				T_supDescTache *tache = &pGes->Tache[indice];
+				if (tache->sequence) {
+					perfDemarrer(&table[indice]);
+					retour = semSignal(tache->monVersTac);
+					if (retour == ERROR) {
+						if (tache->monVersTac == NULL) {
+							printDebug("Le semaphore a ete supprime\n");
+						} else {
+							return ERROR;
+						}
+					}
 #ifndef CPU432
 				  /* Sur la CPU 432, il n'y a pas besoin de realiser cette temporisation. */
                   ksleep(1);
 #endif
-                  retour = semWait (tache->tacVersMon);
-                  if (retour == ERROR)
-                    {
-                      if (tache->tacVersMon == NULL)
-                        {
-                          printDebug ("Le semaphore a ete supprime\n");
-                        }
-                      else
-                        {
-                          return ERROR;
-                        }
-                    }
-                  perfArreter (&table[indice]);
-                }                      /* endif(tache->sequence)         */
+					retour = semWait(tache->tacVersMon);
+					if (retour == ERROR) {
+						if (tache->tacVersMon == NULL) {
+							printDebug("Le semaphore a ete supprime\n");
+						} else {
+							return ERROR;
+						}
+					}
+					perfArreter(&table[indice]);
+				} /* endif(tache->sequence)         */
 //              ksleep(100);
-            }                          /* endfor(i=0                     */
-        }
-      else
-        {
-        	ksleep(50);
-        }                              /* endif(1==supRunLireEtat()      */
-      /* --------------------------------     */
-      /* SIGNALEMENT POUR WATCH DOG           */
-      /* --------------------------------     */
-      perfDemarrer (&reste);
-      /*------------------------------------
-	* TRAITEMENT DES ALERTES
-	* --------------------------------	*/
-      if (1 == supRunLireEtat ())
-        {
-          trt_alt ();
-        }                              /* endif(pGes->appli==1                         */
-      perfArreter (&reste);
+			} /* endfor(i=0                     */
+		} else {
+			ksleep(50);
+		} /* endif(1==supRunLireEtat()      */
+		/* --------------------------------     */
+		/* SIGNALEMENT POUR WATCH DOG           */
+		/* --------------------------------     */
+		perfDemarrer(&reste);
+		/*------------------------------------
+		 * TRAITEMENT DES ALERTES
+		 * --------------------------------	*/
+		if (1 == supRunLireEtat()) {
+			trt_alt();
+		} /* endif(pGes->appli==1                         */
+		perfArreter(&reste);
 
+		if (monDebugGet(MON_DEBUG_PERF_SUP)) {
+			tickCour = ktickGetCurrent();
+			if ((tickCour - tickLast) > 10000) {
+				tickLast = tickCour;
+				if (1 == supRunLireEtat()) {
+					for (indice = 0; indice < pGes->nbTache; indice++) {
+						T_supDescTache *tache = &pGes->Tache[indice];
+						if (tache->sequence) {
+							printf("\nTache %2d et nom %-20s (%7d/%d) : ",
+									indice, tache->nomTache, tache->bidon,
+									tache->position);
+							perfImprimer(&table[indice]);
+							perfInit(&table[indice]);
+						} else {
+							printf("\nTache %2d et nom %-20s (%7d/%d)", indice,
+									tache->nomTache, tache->bidon,
+									tache->position);
+						}
+					}
+					printf("\nReste --------------- ");
+					perfImprimer(&reste);
+					perfInit(&reste);
+					printf("\nTotal --------------- ");
+					perfImprimer(&total);
+					perfInit(&total);
+					printf("\n");
+				} else {
+					printf("Mode systeme debut ***************\n");
+					for (indice = 0; indice < pGes->nbTache; indice++) {
+						T_supDescTache *tache = &pGes->Tache[indice];
+						if (!tache->sequence) {
+							printf("\nTache %2d et nom %10s (%7d/%d)", indice,
+									tache->nomTache, tache->bidon,
+									tache->position);
+						}
+					}
+					printf("\nMode systeme fin ***************\n");
+				}
+				/* Trace des allocations memoire */
+				{
+					int32 allocSize_dw, allocNb_dw;
+					int32 maxSize_dw, maxNb_dw;
+					kmmGetStatus(NULL, &allocSize_dw, &allocNb_dw, &maxSize_dw,
+							&maxNb_dw);
+					printf(
+							"Allocations **** %8ld/%8ld **** MAX %8ld/%8ld ******\n",
+							allocSize_dw, allocNb_dw, maxSize_dw, maxNb_dw);
+					printf("Err 485 **** %8ld/%8ld **** \n",
+							lumMsgCreateurGetErr(), lumTraiteurGetErr());
+				}
+			}
+		}
 
-      if (monDebugGet (MON_DEBUG_PERF_SUP))
-        {
-      tickCour=ktickGetCurrent();
-      if((tickCour-tickLast)>10000)
-      {
-      	tickLast=tickCour;
-              if (1 == supRunLireEtat ())
-                {
-                  for (indice = 0; indice < pGes->nbTache; indice++)
-                    {
-                      T_supDescTache *tache = &pGes->Tache[indice];
-                      if (tache->sequence)
-                        {
-                          printf ("\nTache %2d et nom %-20s (%7d/%d) : ",
-                                  indice, tache->nomTache,tache->bidon,tache->position);
-                          perfImprimer (&table[indice]);
-                          perfInit (&table[indice]);
-                        }
-                        else
-                        {
-                          printf ("\nTache %2d et nom %-20s (%7d/%d)",
-                                  indice, tache->nomTache,tache->bidon,tache->position);
-                        }
-                    }
-                  printf ("\nReste --------------- ");
-                  perfImprimer (&reste);
-                  perfInit (&reste);
-                  printf ("\nTotal --------------- ");
-                  perfImprimer (&total);
-                  perfInit (&total);
-                  printf ("\n");
-                }
-                else
-                {
-                    printf("Mode systeme debut ***************\n");
-                   for (indice = 0; indice < pGes->nbTache; indice++)
-                    {
-                      T_supDescTache *tache = &pGes->Tache[indice];
-                      if (!tache->sequence)
-                        {
-                          printf ("\nTache %2d et nom %10s (%7d/%d)",
-                                  indice, tache->nomTache,tache->bidon,tache->position);
-                        }
-                    }
-                    printf("\nMode systeme fin ***************\n");
-                }
-                /* Trace des allocations memoire */
-                {
-                int32 allocSize_dw,allocNb_dw;
-                int32 maxSize_dw,maxNb_dw;
-                	kmmGetStatus(NULL,&allocSize_dw,&allocNb_dw,&maxSize_dw,&maxNb_dw);
-                    printf("Allocations **** %8ld/%8ld **** MAX %8ld/%8ld ******\n",
-                    	allocSize_dw,allocNb_dw,maxSize_dw,maxNb_dw);
-                    printf("Err 485 **** %8ld/%8ld **** \n",
-                    	lumMsgCreateurGetErr(),lumTraiteurGetErr());
-                }
-            }
-        }
-
-    }                                  /* endwhile(notFin                                      */
-  /* --------------------------------     */
-  /* FIN DE supRun                                        */
-  /* --------------------------------     */
-  return retour;
+	} /* endwhile(notFin                                      */
+	/* --------------------------------     */
+	/* FIN DE supRun                                        */
+	/* --------------------------------     */
+	return retour;
 }

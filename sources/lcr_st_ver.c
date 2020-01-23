@@ -39,6 +39,7 @@
 #endif
 
 #define ST_VER_CMD				"ST VER"
+#define TST_VER_CMD_FULL                        "TST VERSION"
 
 /* ********************************
  * DEFINITION DES TYPES LOCAUX
@@ -107,4 +108,37 @@ int lcr_st_ver(INT las, INT mode, INT lg_mess, STRING buffer, INT position, stru
 	 * FIN DE lcr_st_ver
 	 * ------------------------------------ */
 	return modifConfig;
+}
+
+int lcr_tst_version(INT las,INT mode,INT lg_mess,STRING buffer,INT position, struct usr_ztf *pt_mess,INT flg_fin,INT *bloc)
+{
+char *ptCour=(char *)&buffer[position];
+int   lgCour=lg_mess-position;
+int nbCar=0;
+int flag_err=0;
+
+	/* Une petite evolution pour prendre en compte le TST VERSION */
+
+	if(0==strncmp(buffer,TST_VER_CMD_FULL,strlen(TST_VER_CMD_FULL)))
+	{
+		ptCour+=strlen(TST_VER_CMD_FULL);
+		lgCour-=strlen(TST_VER_CMD_FULL);
+	} else {
+		flag_err=1;
+	}
+	ptCour=tst_passe_blanc(ptCour,lgCour,&lgCour);
+
+	if(0==flag_err) {
+
+	tst_send_bloc(las,mode,buffer,&nbCar,bloc,TRUE,pt_mess,
+			"TST VERSION APP=%s VER=%s build=%s",
+			dirifGetAppName(), dirifGetVersionString(), dirifGetVersionBuild());
+	} else {
+		x01_cptr.erreur = flag_err;
+		tedi_erreur (las,mode);
+	}
+									/* ------------------------------------
+									 * FIN DE lcr_st_ver
+									 * ------------------------------------	*/
+	return 0;
 }

@@ -40,13 +40,29 @@
  * LISTE DES INCLUDES
  * ************************************* */
 #include "portage.h"
+#include <kcommon.h>
 
 
 
 /* Informations a modifier pour changer les parametres de version.... */
 
-static int majeure = 1;
-static int mineure = 23;
+#define VERSION_MAJEURE 1
+#define VERSION_MINEURE 24
+#define _DIRIF_APPNAME "CPU432/PIP_LUMINANCE"
+
+#define _DIRIF_STATUS VS_RELEASE
+#define _DIRIF_VERSION KLIBVERSION_SET( VERSION_MAJEURE, VERSION_MINEURE, 0, 0 )
+
+static int majeure=VERSION_MAJEURE;
+static int mineure=VERSION_MINEURE;
+
+KLIBVERSION( dirif, _DIRIF_VERSION, _DIRIF_STATUS )
+
+const char * dirifGetAppName()
+{
+	return _DIRIF_APPNAME;
+}
+
 
 int versionLireMajeure(const char *name)
 {
