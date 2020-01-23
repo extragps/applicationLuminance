@@ -1,0 +1,6 @@
+#include "standard.h"
+#include "mon_def.h"
+#include "mon_str.h"
+#include "mon_ext.h"
+#include "xdg_str.h"
+#include "mon_pro.h"

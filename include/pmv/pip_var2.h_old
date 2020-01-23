@@ -1,0 +1,21 @@
+/*
+ * pip_var2.h
+ *
+ *  Created on: 19 juin 2008
+ *      Author: xavier
+ */
+
+#ifndef _PIP_VAR2_H
+#define _PIP_VAR2_H
+
+extern struct pip_ctrl_las pip_ctrl_las[];
+extern struct pip_act_module_alpha pip_act_module_alpha[];
+extern struct pip_act_caisson_alpha pip_act_caisson_alpha[];
+extern struct pip_act_car_alpha pip_act_car_alpha[];
+extern struct pip_act_module_graph pip_act_module_graph[];
+extern struct pip_act_caisson_graph pip_act_caisson_graph[];
+extern struct pip_act_matrice_graph pip_act_matrice_graph[];
+extern struct pip_top_synchro pip_top_synchro;
+extern struct pip_ctrl_carte pip_ctrl_carte[];
+
+#endif

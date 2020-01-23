@@ -1,0 +1,10 @@
+GLOBALREF VOID idf_id (INT, INT, INT, STRING, INT, struct usr_ztf *);
+GLOBALREF VOID idf_fin (INT, INT, INT, STRING, INT, struct usr_ztf *);
+GLOBALREF VOID idf_init (INT, INT, INT, STRING, INT, struct usr_ztf *);
+GLOBALREF VOID idf_date (INT, INT, INT, STRING, INT, struct usr_ztf *);
+GLOBALREF VOID idf_reinit (INT);
+GLOBALREF INT idf_reinit_date (STRING, INT);
+GLOBALREF ULONG idf_sec (STRING);
+GLOBALREF VOID idf_datebis (ULONG, STRING);
+GLOBALREF VOID idf_datebis_hms (ULONG, STRING);
+GLOBALREF INT test_date (STRING);
