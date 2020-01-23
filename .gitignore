@@ -5,3 +5,7 @@
 CVS/
 config.cfg
 .cvsignore
+/.metadata
+/lesIos*
+/cpu432io.xml
+*.lck
