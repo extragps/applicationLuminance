@@ -56,6 +56,7 @@
 #endif
 #include "etaSyst.h"
 #include "portage.h"
+#include "supRun.h"
 
 /* ********************************
  * DEFINITION DES CONSTANTES LOCALES

@@ -62,6 +62,8 @@
 
 #include "sramMessage.h"
 #include "configurationSram.h"
+#include "configuration.h"
+#include "cartes.h"
 
 #define DEBUG 0
 

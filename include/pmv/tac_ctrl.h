@@ -12,6 +12,7 @@ BYTE tac_ctrlLocalDistant (INT);
 VOID tac_ctrl_main (int);
 void tac_ctrl_set_force(int val);
 int tac_ctrl_get_force(void);
+VOID tac_ctrl_reactiver_force(void);
 
 
 #endif

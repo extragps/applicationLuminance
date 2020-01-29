@@ -14,7 +14,7 @@ ifconfig lo 127.0.0.1
 route add -net 127.0.0.0 netmask 255.0.0.0 lo
 chmod 777 /var/flash
 c4cmd --ln /usr/http /var/flash/http
-c4cmd --ln /usr/bin/pmvMain /var/flash/pmvMain
+c4cmd --ln /usr/bin/c4s /var/flash/c4s 
 c4cmd --ln /usr/bin/c4shttpd /var/flash/c4shttpd
 c4cmd --sh /var/flash/eth.cfg /etc/eth.cfg
 c4watchdog &

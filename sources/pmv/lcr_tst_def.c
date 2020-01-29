@@ -60,8 +60,7 @@
 #include "configurationPriv.h"
 #include "configurationSram.h"
 #include "cpu432/sram.h"
-#include "lumAdresse.h"
-#include "lumMsg.h"
+#include "cartes.h"
 #include "luminance/lumMsgCreer.h"
 #include "lumTraiter.h"
 #include "infos/lumInfos.h"
@@ -73,7 +72,6 @@
 #include "thl/thl.h"
 #include "es/es.h"
 #include  "station/cartesAfficheur.h"
-#include "lcr_tst_def.h"
 
 
 

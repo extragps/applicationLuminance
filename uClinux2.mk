@@ -12,8 +12,7 @@
 ifndef $(UCLINUX)
 UCLINUX := ../../sys/uClinux
 endif
-
-UCLINUX_CFG := config.rdt
+UCLINUX_CFG := config.pip
 
 HOST_CIBLE := lx86_64
 
@@ -24,10 +23,10 @@ WWW_RSC := ../c4sWebServer/www/build
 ROMFS := $(UCLINUX)/romfs
 
 TARGET_DIR := ../../binaries
-
 ifndef $(TARGET_NAME)
-TARGET_NAME := c4sLuminance
+TARGET_NAME := c4s
 endif
+
 #----------------------------------------------------------------------------------------------------------------------
 # Nettoyage systeme Linux
 cleansys:
@@ -61,9 +60,6 @@ buildtools:
 	@echo "================================================================================"
 	(cd $(CPU432TOOLS_DIR) ; make build CIBLE=$(CIBLE) -s)
 
-cleanVersion : 
-	rm -rf cpu432/obj/pmv/LCR_TST.o
-	
 #----------------------------------------------------------------------------------------------------------------------
 # Mise a jour du systeme de fichiers
 #
@@ -73,12 +69,7 @@ preparesys:
 	@echo "==== Construction du systeme de fichiers"
 	@echo "================================================================================"
 	# preparation systeme
-	@if [ ! -d $(UCLINUX)/romfs/home ] ; then \
-		mkdir -p $(UCLINUX)/romfs/home ; \
-	fi;
-	@if [ ! -d $(UCLINUX)/romfs/usr ] ; then \
-		mkdir -p $(UCLINUX)/romfs/usr ; \
-	fi;
+	mkdir -p $(UCLINUX)/romfs/home ;
 	@if [ ! -d $(UCLINUX)/romfs/usr/bin ] ; then \
 		mkdir -p $(UCLINUX)/romfs/usr/bin ; \
 	fi;
@@ -98,13 +89,21 @@ preparesys:
 	cp romfs/etc/group $(UCLINUX)/romfs/etc/group
 	cp romfs/etc/passwd $(UCLINUX)/vendors/Generic/big/
 	cp romfs/etc/rc 	$(UCLINUX)/vendors/Generic/big
-	
+
 	# copie application et utilitaires
 	mkdir -p $(ROMFS)/usr/bin
 	rm -f $(ROMFS)/usr/bin/*
-	cp $(BIN_DIR)/pmvMain $(ROMFS)/usr/bin
+	cp $(BIN_DIR)/c4s $(ROMFS)/usr/bin
 	cp $(BIN_DIR)/c4busybox $(ROMFS)/usr/bin
 	
+	mkdir -p $(ROMFS)/usr/http
+	rm -rf $(ROMFS)/usr/http/*
+	cp $(WWW_RSC)/httpd.conf $(ROMFS)/usr/http
+	mkdir -p $(ROMFS)/usr/http/rsc/font
+	cp -R $(WWW_RSC)/rsc/font/*.* $(ROMFS)/usr/http/rsc/font/
+	cp $(WWW_RSC)/rsc/*.* $(ROMFS)/usr/http/rsc/
+	cp $(WWW_RSC)/index.html $(ROMFS)/usr/http	
+
 	ln -s c4busybox $(ROMFS)/usr/bin/cpu432Watchdog
 	ln -s c4busybox $(ROMFS)/usr/bin/cpu432Launcher
 	ln -s c4busybox $(ROMFS)/usr/bin/copieSysteme
@@ -113,20 +112,6 @@ preparesys:
 	ln -s c4busybox $(ROMFS)/usr/bin/c4su3
 	ln -s c4busybox $(ROMFS)/usr/bin/c4watchdog
 	ln -s c4busybox $(ROMFS)/usr/bin/c4shttpd
-	
-#	mkdir -p $(ROMFS)/usr/http
-#	rm -rf $(ROMFS)/usr/http/*
-#	cp $(WWW_RSC)/httpd.conf $(ROMFS)/usr/http
-#	mkdir -p $(ROMFS)/usr/http/rsc/font
-#	cp -R $(WWW_RSC)/rsc/font/*.* $(ROMFS)/usr/http/rsc/font/
-#	cp $(WWW_RSC)/rsc/*.* $(ROMFS)/usr/http/rsc/
-#	cp $(WWW_RSC)/index.html $(ROMFS)/usr/http	
-#	
-#	cp $(BIN_DIR)/pmvMain $(UCLINUX)/romfs/home/
-#	cp $(BIN_DIR)/copieSysteme $(UCLINUX)/romfs/usr/bin/
-#	ln -fs ./copieSysteme $(UCLINUX)/romfs/usr/bin/utilSysteme
-#	(cd $(UCLINUX) ; make -f setconfig.mk loadcfg CFG_NAME=$(VARIANTE_UCLINUX))
-#	(cd $(UCLINUX) ; make)
 	
 #----------------------------------------------------------------------------------------------------------------------
 # Creation de l'image

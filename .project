@@ -4,6 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>AfficheurC</project>
+		<project>cpu432Board</project>
+		<project>cpu432Tools</project>
 		<project>cpuRdtComm</project>
 		<project>cpuRdtIo</project>
 		<project>cpuRdtSram</project>

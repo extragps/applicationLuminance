@@ -78,6 +78,7 @@
 #include "ioPortLib.h"
 #include "spcLib.h"
 #include "usr_fip_mcs_init.h"
+#include "dialogueFip.h"
 
 /* ********************************	*/
 /* DEFINITION DES CONSTANTES		*/

@@ -20,6 +20,7 @@
 #include "configuration.h"
 #include "sequenceur.h"
 #include "cartes.h"
+#include "mgpLib.h"
 
 Afficheur *afficheurTable[AFFICHEUR_NB_MAX];
 uint16 afficheursDefauts=0;

@@ -53,6 +53,7 @@
 #include "pip_var.h"
 
 #include "sequenceurTraiter.h"
+#include "pmv/lcr_p.h"
 
 /* Parmi les fonctions du modules a traiter :
  * - recuperation de la duree de validite du message,

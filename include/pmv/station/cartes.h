@@ -1,6 +1,9 @@
 #ifndef CARTES_H_
 #define CARTES_H_
 
+#include "lumAdresse.h"
+#include "lumMsg.h"
+#include "event.h"
 
 /* ********************************	*
  * PROTOTYPAGE DES FONCTIONS DU MODULE

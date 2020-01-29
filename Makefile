@@ -13,7 +13,7 @@ CPPFLAGS 	 = -DLINUX -DSANS_FLASH -DSANS_QUART $(INCLUDE_FLAGS) -DPMV -Iinclude 
 	-Iinclude/worldFip/usr_fip \
 	-Iinclude/worldFip/mcs 
 #DEPS=  cpuRdtWebServer cpu432Tools cpu432Board  cpuRdtCommon cpuRdtComm klog kcommon
-DEPS= AfficheurC Ecouteur cpu432Board cpuRdtComm klog kcommon
+DEPS= c4sWebServer AfficheurC Ecouteur cpu432Tools cpu432Board cpuRdtComm kxml klog kcommon
 VARIANTE_UCLINUX=rdt
 
 else
@@ -23,7 +23,7 @@ export CPPFLAGS 	 = -DLINUX -DSANS_FLASH -DSANS_QUART -DSANS_WORLDFIP $(INCLUDE_
 	-Iinclude/pmv \
 	-Iinclude/pmv/station 
 #DEPS=  cpuRdtWebServer cpu432Tools cpu432Board  cpuRdtCommon cpuRdtComm klog kcommon kxml
-DEPS= AfficheurC Ecouteur cpu432Board cpuRdtComm klog kxml kcommon 
+DEPS= c4sWebServer AfficheurC Ecouteur cpu432Tools cpu432Board cpuRdtComm klog kxml kcommon 
 endif
 
 	
@@ -137,7 +137,6 @@ $(SOURCES)/pmv/station/configuration/configurationParam.c \
 $(SOURCES)/pmv/station/configuration/configurationSram.c \
 $(SOURCES)/pmv/station/configuration/sramMessage.c \
 $(SOURCES)/pmv/station/configuration/sramBdd.c \
-$(SOURCES)/pmv/station/watchdog/watchdog.c \
 $(SOURCES)/portMsgQueue.c \
 $(SOURCES)/portSemLib.c\
 $(SOURCES)/rec_util.c \
@@ -152,6 +151,7 @@ $(SOURCES)/versionApplication.c \
 $(SOURCES)/passerelle/dialoguePass.c \
 
 # $(SOURCES)/pmv/lon/TAC_PSL.c 
+# $(SOURCES)/pmv/station/watchdog/watchdog.c \
 # $(SOURCES)/pmv/lon/TAC_TRI.c 
 # $(SOURCES)/pmv/lon/TAC_LMP.c 
 # $(SOURCES)/pmv/lon/L_LT501.c \

@@ -65,6 +65,7 @@
 #include "pip_str.h"
 #include "pip_var.h"
 #include "lcr_p.h"
+#include "lcr_trc.h"
 #include "ioPortLib.h"
 #include "eriLib.h"
 #include "etaSyst.h"
