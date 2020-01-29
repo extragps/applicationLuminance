@@ -21,6 +21,7 @@ int etaSystTesterAppli (void);
 int etaSystTesterSysteme (void);
 void etaSystIncrCompteur (int numero);
 void etaSystResetWatchDog (void);
+void etaSystSetPos(int numero,int cpt);
 
 
 /* ********************************

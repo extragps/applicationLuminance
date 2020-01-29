@@ -45,5 +45,6 @@ void lumTraiteurStart(LumTraiteur *traiteur_pt);
 void lumTraiteurStop(LumTraiteur *traiteur_pt);
 void lumTraiteurSetSequenceur(LumTraiteur *traiteur_pt,Sequenceur *seq_pt);
 LumTraiteur *lumTraiteurGet(void);
+int32 lumTraiteurGetErr(void);
 
 #endif /*LUMTRAITER_H_*/

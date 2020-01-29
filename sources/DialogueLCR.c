@@ -547,7 +547,6 @@ FUNCPTR DialogueLCR(int numero, int numPort)
 						notFin = 0;
 					} else
 					{
-						int carCour;
 						int retour = 0;
 						/* ---------------------------------
 						 * Scrutation PC

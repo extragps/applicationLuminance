@@ -37,13 +37,13 @@
 #include "mon_ext.h"
 #include "limits.h"
 #include "etaSyst.h"
-#include "watchdog.h"
+#include "watchdog/watchdog.h"
 
 /* ********************************	*/
 /* DECLARATION DES CONSTANTES		*/
 /* ********************************	*/
 
-#define CPU_WD_PORT		8001	/* Numéro de port IP utilise pour la communication entre appli et wd */
+//#define CPU_WD_PORT		8001	/* Numéro de port IP utilise pour la communication entre appli et wd */
 #define ETA_SYST_MAX	15000
 
 /* ********************************	*/
@@ -124,7 +124,7 @@ void etaSyst (T_supGestion * pGes)
    * INITIALISATION DU WATCHDOG
    * ************************************ */
 
-  watchdogStart(&watchdog_t,1,CPU_WD_PORT);
+  watchdogStart(&watchdog_t,1) ; //,CPU_WD_PORT);
 
   /* Pendant la phase d'initialisation, on limite la portee
    * du watchdog. */
@@ -193,18 +193,18 @@ void etaSystIncrCompteur (int numero)
 	}
 }
 
-void etaSystImprCompteur ()
-{
-int numero=0;
-  /* Incrementer ici le compteur associe e la tache dont le numero est
-   * passe en parametre.  */
-	for(;numero<supGestion.nbTache;numero++)
-	{
-		printf("Tache %s : cpt :%d\n",
-						supGestion.Tache[numero].nomTache,
-						supGestion.Tache[numero].bidon);
-	}
-}
+//void etaSystImprCompteur ()
+//{
+//int numero=0;
+//  /* Incrementer ici le compteur associe e la tache dont le numero est
+//   * passe en parametre.  */
+//	for(;numero<supGestion.nbTache;numero++)
+//	{
+//		printf("Tache %s : cpt :%d\n",
+//						supGestion.Tache[numero].nomTache,
+//						supGestion.Tache[numero].bidon);
+//	}
+//}
 
 void etaSystSetPos(int numero,int cpt)
 {
