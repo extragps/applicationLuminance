@@ -5,10 +5,9 @@ UCLINUX=../../sys/uClinux
 
 include ../generation/defines.mk
 
+CPPFLAGS_GLOB = -DLINUX -DSANS_FLASH -DSANS_QUART $(INCLUDE_FLAGS) -DPMV -Iinclude -Iinclude/pmv -Iinclude/pmv/station
 ifeq ($(CIBLE),cpu432)
-CPPFLAGS 	 = -DLINUX -DSANS_FLASH -DSANS_QUART $(INCLUDE_FLAGS) -DPMV -Iinclude \
-	-Iinclude/pmv \
-	-Iinclude/pmv/station \
+CPPFLAGS 	 = $(CPPFLAGS_GLOB) \
 	-Iinclude/worldFip \
 	-Iinclude/worldFip/usr_fip \
 	-Iinclude/worldFip/mcs 
@@ -18,10 +17,7 @@ VARIANTE_UCLINUX=rdt
 
 else
 # Pour l'instant rien n'est prevu pour faire une compilation appli... 
-export CPPFLAGS 	 = -DLINUX -DSANS_FLASH -DSANS_QUART -DSANS_WORLDFIP $(INCLUDE_FLAGS)  -DPMV -Iinclude \
-	-Wno-deprecated \
-	-Iinclude/pmv \
-	-Iinclude/pmv/station 
+export CPPFLAGS 	 =  $(CPPFLAGS_GLOB) -DCPU432_PORT=23999 -DCPU432_PORT_PASS=21354 -DSANS_WORLDFIP -Wno-deprecated
 #DEPS=  cpuRdtWebServer cpu432Tools cpu432Board  cpuRdtCommon cpuRdtComm klog kcommon kxml
 DEPS= c4sWebServer AfficheurC Ecouteur cpu432Tools cpu432Board cpuRdtComm klog kxml kcommon 
 endif

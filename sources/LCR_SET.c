@@ -116,11 +116,11 @@ static VOID cmd_set (STRING buffer, INT nbcar, INT las)
                   x01_set[las].mtel = FALSE;
                   xdg_cf_las[las].vitesse = 1200;
 				  if(xdg_cf_las[las].type_e==LIAISON_PASS) {
-						xdg_cf_las[las].numPortIp = 21355  + las-PORT_PASS;
+						xdg_cf_las[las].numPortIp = CPU432_PORT_PASS  + las-PORT_PASS;
 				  } else {
 						/* Pour avoir le numero de port IP compatible avec
 						 * le serveur WEB. */
-					  xdg_cf_las[las].numPortIp = 33999 + las-PORT_IP_LCR;
+					  xdg_cf_las[las].numPortIp = CPU432_PORT + las-PORT_IP_LCR;
 				  }
 				  ptr_deb++;
                   if (ptr_deb >= ptr_fin) {

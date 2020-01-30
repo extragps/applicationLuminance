@@ -17,6 +17,14 @@
 #ifndef _YPC_LAS_H
 #define _YPC_LAS_H
 
+#ifndef CPU432_PORT_PASS
+#define CPU432_PORT_PASS 21355
+#endif
+
+#ifndef CPU432_PORT
+#define CPU432_PORT 33999
+#endif
+
 void tac_las_ctrl (void);
 void tac_las (int);
 void tac_las_init_cfg (void);

@@ -319,13 +319,13 @@ void tac_las_init_cfg_las(INT las)
 		xdg_cf->parite = SANSPARITE;
 		break;
 	case PORT_PASS:
-		xdg_cf->numPortIp = 21355;
+		xdg_cf->numPortIp = CPU432_PORT_PASS;
 		break;
 	case PORT_IP_LCR:
-		xdg_cf->numPortIp = 33999;
+		xdg_cf->numPortIp = CPU432_PORT;
 		break;
 	default:
-		xdg_cf->numPortIp = 33999 + las - PORT_IP_LCR;
+		xdg_cf->numPortIp = CPU432_PORT + las - PORT_IP_LCR;
 		break;
 
 //	case PORT_DET:
