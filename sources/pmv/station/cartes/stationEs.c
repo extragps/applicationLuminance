@@ -19,6 +19,7 @@
 #include "cartesAfficheur.h"
 #include "configuration.h"
 #include "eriLib.h"
+#include "lcr_trc.h"
 
 static Es *esCarte;
 
@@ -91,6 +92,10 @@ void essGetInfos(char *infos, int longueur)
 	{
 		infos[0] = 0;
 	}
+}
+
+int essGetAlim() {
+	return (int)(esGetInput(esCarte) & ES_ALIM_INPUT);
 }
 bool essDefautAlim()
 {

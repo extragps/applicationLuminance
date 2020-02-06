@@ -34,35 +34,35 @@ CPPFLAGS := $(CPPFLAGS) $(DEPS:%=-I../%/$(SOURCES))
 
 FICHIERS =  \
 $(SOURCES)/md5.c \
-$(SOURCES)/DialogueLCR.c \
-$(SOURCES)/LCR_CF6.c \
-$(SOURCES)/LCR_IDF.c \
-$(SOURCES)/LCR_SET.c \
-$(SOURCES)/LCR_ST1.c \
-$(SOURCES)/LCR_TRC.c \
-$(SOURCES)/LCR_TST0.c \
-$(SOURCES)/LCR_TST1.c \
-$(SOURCES)/LCR_VT.c \
-$(SOURCES)/MON_C32.c \
-$(SOURCES)/MON_VAR.c \
+$(SOURCES)/dialogueLCR.c \
+$(SOURCES)/lcr_cf6.c \
+$(SOURCES)/lcr_idf.c \
+$(SOURCES)/lcr_set.c \
+$(SOURCES)/lcr_st1.c \
+$(SOURCES)/lcr_trc.c \
+$(SOURCES)/lcr_tst0.c \
+$(SOURCES)/lcr_tst1.c \
+$(SOURCES)/lcr_vt.c \
+$(SOURCES)/mon_c32.c \
+$(SOURCES)/mon_var.c \
 $(SOURCES)/mon_time.c \
-$(SOURCES)/MQ.c \
-$(SOURCES)/Mon_s32.c \
-$(SOURCES)/PipeLinux.c \
-$(SOURCES)/SIR_DV1.c \
-$(SOURCES)/Semaphore.c \
-$(SOURCES)/SupInit.c \
-$(SOURCES)/SupInitLib.c \
-$(SOURCES)/Superviseur.c \
-$(SOURCES)/TED_PROT.c \
-$(SOURCES)/TRT_ALT.c \
-$(SOURCES)/Tache.c \
-$(SOURCES)/X01_TRC.c \
-$(SOURCES)/X01_VAR.c \
-$(SOURCES)/X01_VCT.c \
-$(SOURCES)/X02_VCT.c \
-$(SOURCES)/XDG_VAR.c \
-$(SOURCES)/YPC_LAS.c \
+$(SOURCES)/mq.c \
+$(SOURCES)/mon_s32.c \
+$(SOURCES)/pipeLinux.c \
+$(SOURCES)/sir_dv1.c \
+$(SOURCES)/semaphore.c \
+$(SOURCES)/supInit.c \
+$(SOURCES)/supInitLib.c \
+$(SOURCES)/superviseur.c \
+$(SOURCES)/ted_prot.c \
+$(SOURCES)/trt_alt.c \
+$(SOURCES)/tache.c \
+$(SOURCES)/x01_trc.c \
+$(SOURCES)/x01_var.c \
+$(SOURCES)/x01_vct.c \
+$(SOURCES)/x02_vct.c \
+$(SOURCES)/xdg_var.c \
+$(SOURCES)/ypc_las.c \
 $(SOURCES)/anaSys.c \
 $(SOURCES)/bpTestLib.c \
 $(SOURCES)/eriLib.c \
@@ -89,23 +89,25 @@ $(SOURCES)/lcr_trace.c \
 $(SOURCES)/lcr_tst_cnf.c \
 $(SOURCES)/lcr_tst_debug.c \
 $(SOURCES)/lcr_tst_sc.c \
+$(SOURCES)/lcr_tst_degrade.c \
+$(SOURCES)/lcr_tst_cfetoile.c \
 $(SOURCES)/lcr_tst_cfsp.c \
 $(SOURCES)/lcr_util.c \
 $(SOURCES)/mgpLib.c \
 $(SOURCES)/mon_debug.c \
 $(SOURCES)/perfLib.c \
 $(SOURCES)/pmv/lcr_cftp_util.c \
-$(SOURCES)/pmv/LCR_CFES.c \
-$(SOURCES)/pmv/LCR_CFPL.c \
-$(SOURCES)/pmv/LCR_CFPP.c \
-$(SOURCES)/pmv/LCR_CFTP.c \
-$(SOURCES)/pmv/LCR_INIT.c \
-$(SOURCES)/pmv/LCR_P.c \
-$(SOURCES)/pmv/LCR_SC.c \
-$(SOURCES)/pmv/LCR_TST.c \
-$(SOURCES)/pmv/PIP_VAR.c \
-$(SOURCES)/pmv/TAC_CTRL.c \
-$(SOURCES)/pmv/X01_LMP.c \
+$(SOURCES)/pmv/lcr_cfes.c \
+$(SOURCES)/pmv/lcr_cfpl.c \
+$(SOURCES)/pmv/lcr_cfpp.c \
+$(SOURCES)/pmv/lcr_cftp.c \
+$(SOURCES)/pmv/lcr_init.c \
+$(SOURCES)/pmv/lcr_p.c \
+$(SOURCES)/pmv/lcr_sc.c \
+$(SOURCES)/pmv/lcr_tst.c \
+$(SOURCES)/pmv/pip_var.c \
+$(SOURCES)/pmv/tac_ctrl.c \
+$(SOURCES)/pmv/x01_lmp.c \
 $(SOURCES)/pmv/lcr_bk.c \
 $(SOURCES)/pmv/lcr_cfet.c \
 $(SOURCES)/pmv/lcr_cfsl.c \
@@ -117,7 +119,7 @@ $(SOURCES)/pmv/lcr_tst_lum.c \
 $(SOURCES)/pmv/pipTest.c \
 $(SOURCES)/pmv/pip_util.c \
 $(SOURCES)/pmv/x03_pol.c \
-$(SOURCES)/pmv/DialogueLuminance.c \
+$(SOURCES)/pmv/dialogueLuminance.c \
 $(SOURCES)/pmv/station/event/event.c \
 $(SOURCES)/pmv/station/cartes/station.c \
 $(SOURCES)/pmv/station/cartes/stationAfficheurs.c \
@@ -145,32 +147,6 @@ $(SOURCES)/teleLib.c \
 $(SOURCES)/tempLib.c \
 $(SOURCES)/versionApplication.c \
 $(SOURCES)/passerelle/dialoguePass.c \
-
-# $(SOURCES)/pmv/lon/TAC_PSL.c 
-# $(SOURCES)/pmv/station/watchdog/watchdog.c \
-# $(SOURCES)/pmv/lon/TAC_TRI.c 
-# $(SOURCES)/pmv/lon/TAC_LMP.c 
-# $(SOURCES)/pmv/lon/L_LT501.c \
-# $(SOURCES)/pmv/lon/L_CD501.c \
-# $(SOURCES)/pmv/lon/L_CD503.c \
-# $(SOURCES)/pmv/lon/L_CL501.c \
-# $(SOURCES)/pmv/lon/L_CO501.c \
-# $(SOURCES)/pmv/lon/L_ES502.c \
-# $(SOURCES)/pmv/lon/LON_MAI1.c \
-# $(SOURCES)/pmv/lon/LON_PC.c 
-# $(SOURCES)/pmv/lon/LON_TRC.c \
-# $(SOURCES)/pmv/lon/PIP_MAIN.c \
-# $(SOURCES)/pmv/lon/PIP_MAI1.c \
-# $(SOURCES)/pmv/lon/LON_MAI0.c \
-# $(SOURCES)/pmv/LCR_SCCC.c \
-# $(SOURCES)/pmv/LCR_SCFR.c \
-# $(SOURCES)/pmv/lcr_ver.c \
-# $(SOURCES)/simuLib.c \
-# $(SOURCES)/MAS_PROT.c \
-# $(SOURCES)/pmv/lon/LON_VAR.c \
-# $(SOURCES)/pmv/lon/PIP_LON.c \
-# $(SOURCES)/mgpLib.c \
-# $(SOURCES)/HDL_CRT.c \
 
 FICHIERS_FIP =  \
 $(SOURCES)/worldFip/dialogueFip.c \

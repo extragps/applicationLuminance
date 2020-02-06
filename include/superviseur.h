@@ -7,7 +7,7 @@
 /*				13590 Meyreuil - FRANCE                         			*/
 /*				  Tel. 04 42 58 63 71                           			*/
 /****************************************************************************/
-/*  Fichier : Superviseur.h                                                 */
+/*  Fichier : superviseur.h                                                 */
 /*  MODULE  : Superviseur                                                   */
 /****************************************************************************/
 /* Auteur :   Herve ZEITTOUN                                                */
@@ -39,9 +39,9 @@
 #include "string.h"
 #include "standard.h"                  /* redefinition des types                         */
 #include "Tache.h"
-#include "MQ.h"
+#include "mq.h"
 #include "mon_ext.h"
-#include "Semaphore.h"
+#include "semaphore.h"
 
 #ifndef SUPERVISEUR_H
 #define SUPERVISEUR_H

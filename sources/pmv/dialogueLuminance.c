@@ -39,9 +39,11 @@
  * LISTE DES INCLUDES
  * ************************************* */
 
+#include <mq.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <superviseur.h>
 #include "kcommon.h"
 #include "klog.h"
 #include "standard.h"
@@ -53,9 +55,7 @@
 #include "vct_str.h"
 #include "lcr_util.h"
 #include "supRun.h"
-#include "Superviseur.h"
 #include "extLib.h"
-#include "MQ.h"
 #include "Tache.h"
 #include "x01_var.h"
 #include "spcLib.h"
@@ -89,7 +89,9 @@
 #endif
 
 static LumMsgCreateur *_dialogueLum_pt = NULL;
+#ifdef CPU432
 static int32 _lumTraiteurNbDef=0;
+#endif
 
 /*
  * DialogueLuminanceAjouterEcouteur

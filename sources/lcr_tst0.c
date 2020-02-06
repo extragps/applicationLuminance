@@ -91,16 +91,15 @@ INT
 tst_tst (INT las, INT mode, INT lg_mess, STRING buffer, INT position,
          struct usr_ztf *pt_mess)
 {
-  INT i, j;               /* variable de boucle lecture du buffer            */
+  INT i;               /* variable de boucle lecture du buffer            */
+  int j=0;
   INT taille;                   /* taille d'une chaine de caracteres               */
   INT flag_err;                 /* indicateur d'erreur dans la ligne de cde ST     */
   INT bloc;                     /* numero de bloc a envoyer                        */
   INT config;
-  UINT8 flag_init;
   flag_err = 0;
   config = FALSE;
   bloc = 0;
-  flag_init = FALSE;
   i = position + 3;
   /* on elimine les separateurs */
   i += dv1_separateur (&buffer[i], lg_mess - i);

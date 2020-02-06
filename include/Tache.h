@@ -34,7 +34,7 @@
 #include "tasklib.h"
 #endif
 #include "stdio.h"
-#include "Superviseur.h"
+#include "superviseur.h"
 
 
 /*******************************************************************/

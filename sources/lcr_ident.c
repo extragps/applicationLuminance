@@ -394,6 +394,7 @@ char *lcr_ident_param_substituer(char *commande, int nbCarCmd, int *nbCarRestant
 	int lgSuiv;
 
 	ptSuiv = strstr(ptCour, "ID=");
+	lgSuiv=lgCour-(ptSuiv-ptCour);
 	/* As t-on trouve le mot cle????        */
 	if ((NULL != ptSuiv) && ((int) (ptSuiv - ptCour) < nbCarCmd))
 	{

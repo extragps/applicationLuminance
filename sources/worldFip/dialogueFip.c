@@ -41,6 +41,7 @@
 #include <sys/times.h>
 #include <errno.h>
 #include <limits.h>
+#include <pipe.h>
 #include <time.h>
 #include "kcommon.h"
 #include "define.h"
@@ -68,7 +69,6 @@
 #include "abtLib.h"
 #include "perfLib.h"
 #include "ficTrace.h"
-#include "Pipe.h"
 #include "anaSys.h"
 #include "stAlLib.h"
 #include "etaSyst.h"

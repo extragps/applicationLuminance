@@ -439,5 +439,6 @@ int lcr_tst_eth(INT las,INT mode,INT lg_mess,STRING buffer,INT position, struct 
 		tedi_ctrl_ext(las,mode,flag_err);
 	}
 
-
+	/* Pas de modification de configuration pour TST ETH */
+	return 0;
 }

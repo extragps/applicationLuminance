@@ -24,6 +24,7 @@
                                                                                 /* Definition des erreurs       */
 #define ERI_DEF_COMM_DETECTEUR	2
 #define ERI_DEF_COMM_LON		2
+#define ERI_DEF_COMM_PIP		2
 #define ERI_DEF_CKS_PROGRAMME	3
 #define ERI_DEF_CKS_PIP   		4
 #define ERI_DEF_SCRUTATION_PC	5
@@ -33,6 +34,12 @@
 #define ERI_DEF_PARASURTENSEUR	53
 #define ERI_DEF_PIP				51
 #define ERI_DEF_SABORDAGE_TRANS 55
+#define ERI_DEF_ES 				56
+#define ERI_INF_CHAUFFAGE		57
+#define ERI_DEF_TRANS			58
+#define ERI_DEF_SERIALISATION	59
+#define ERI_DEF_TEMP_AFF		60
+#define ERI_DEF_CONF_AFF		61
                                                                                 /* Erreurs mineures.            */
 #define ERI_DEF_FIN_VALIDITE	5
 #define ERI_DEF_BOUCLE			50
@@ -107,16 +114,16 @@ typedef struct T_eriList
  * PROTOTYPE DES FONCTIONS
  * ********************************	*/
 
-void eriAjouter (char, char);
-void eriSupprimer (char, char);
-BOOL eriChercher (char, char);
+bool eriAjouter (char, char);
+bool eriSupprimer (char, char);
+bool eriChercher (char, char);
 void eriInit (void);
 int eriLireNbErreur (void);
 int eriLireErreur (int, char *, char *);
 int eriLireErreurModule (int, char *,char *,int *);
-void eriSupprimerModule (char grav, char nature,unsigned char mod,unsigned char cais);
-void eriSupprimerModuleVal (char grav, char nature,unsigned char mod,unsigned char cais,int val);
-void eriAjouterModule (char grav, char nature,unsigned char mod,unsigned char cais,int val);
+//bool eriSupprimerModule (char grav, char nature,unsigned char mod,unsigned char cais);
+bool eriSupprimerModuleVal (char grav, char nature,unsigned char mod,unsigned char cais,int val);
+bool eriAjouterModuleVal (char grav, char nature,unsigned char mod,unsigned char cais,int val);
 
 /* ********************************
  * FIN DE eriLib.h

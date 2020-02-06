@@ -42,7 +42,7 @@
 #include "abtLib.h"
 #include "perfLib.h"
 #include "ficTrace.h"
-#include "Pipe.h"
+#include "pipe.h"
 #include "anaSys.h"
 #include "stAlLib.h"
 #include "etaSyst.h"

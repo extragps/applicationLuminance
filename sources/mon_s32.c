@@ -34,12 +34,14 @@
  * LISTE DES INCLUDES
  * ************************************* */
 
+#include <pipe.h>
 #include <termios.h>
 #include <unistd.h>
 #include <string.h>
+#include <superviseur.h>
 #include <time.h>
 #include "standard.h"                  /* redefinition des types                         */
-#include "Semaphore.h"
+#include "semaphore.h"
 #include "Tache.h"
 #include "etaSyst.h"
 #include "xdg_str.h"
@@ -56,11 +58,9 @@
 #include "standard.h"                  /* redefinition des types */
 #include "define.h"
 #include "mon_def.h"
-#include "Superviseur.h"
 #include "mon_ext.h"
 #include "mon_pro.h"
 #include "lcr_idfh.h"
-#include "Pipe.h"
 #include "mon_debug.h"
 #include "mon_def.h"
 #include "tac_ctrl.h"
@@ -214,19 +214,19 @@ int mnemuart(int las)
  *          data = valeur lue
  *
  *******************************************************************************/
-UINT16 mninput16(UINT16 *adresse)
-{
-	UINT16 val;
-	/* TODO : Portage LINUX */
-#ifdef VXWORKS
-	if(vxMemProbe((char *)adresse,VX_READ,2,&val)==ERROR)
-	{
-		printDebug("Probleme de lecture e l'adresse %#0x\n",adresse);
-		val=0;
-	}
-#endif
-	return val;
-}
+//UINT16 mninput16(UINT16 *adresse)
+//{
+//	UINT16 val=0;
+//	/* TODO : Portage LINUX */
+//#ifdef VXWORKS
+//	if(vxMemProbe((char *)adresse,VX_READ,2,&val)==ERROR)
+//	{
+//		printDebug("Probleme de lecture e l'adresse %#0x\n",adresse);
+//		val=0;
+//	}
+//#endif
+//	return val;
+//}
 
 /******************************************************************************
  *
@@ -239,7 +239,7 @@ UINT16 mninput16(UINT16 *adresse)
  *          data = valeur a ecrire
  *
  *******************************************************************************/
-VOID mnoutput16(UINT16* adresse, UINT16 val)
+void mnoutput16(UINT16* adresse, UINT16 val)
 {
 	/* TODO : Portage LINUX */
 #ifdef VXWORKS
@@ -365,7 +365,6 @@ uint32 tickCour_udw=ktickGetCurrent();
  *******************************************************************************/
 VOID mnrts(UINT8 las)
 {
-	return;
 }
 
 /******************************************************************************
@@ -379,19 +378,19 @@ VOID mnrts(UINT8 las)
  *          data = valeur lue
  *
  *******************************************************************************/
-UINT8 mninput(UINT8 *adresse)
-{
-	UINT8 val;
-	/* TODO : Portage LINUX */
-#ifdef VXWORKS
-	if(vxMemProbe((char *)adresse,VX_READ,1,&val)==ERROR)
-	{
-		printDebug("Probleme de lecture 8 bits e l'adresse %#0x\n",adresse);
-		val=0;
-	}
-#endif
-	return val;
-}
+//UINT8 mninput(UINT8 *adresse)
+//{
+//	UINT8 val;
+//	/* TODO : Portage LINUX */
+//#ifdef VXWORKS
+//	if(vxMemProbe((char *)adresse,VX_READ,1,&val)==ERROR)
+//	{
+//		printDebug("Probleme de lecture 8 bits e l'adresse %#0x\n",adresse);
+//		val=0;
+//	}
+//#endif
+//	return val;
+//}
 
 /******************************************************************************
  *
@@ -406,7 +405,7 @@ UINT8 mninput(UINT8 *adresse)
  *                > -1         si suspension en attente de signal
  *
  *******************************************************************************/
-VOID mnsusp(INT tempo)
+void mnsusp(INT tempo)
 {
 	INT Status;
 	INT i;
@@ -457,47 +456,32 @@ VOID mnsusp(INT tempo)
  *                > -1         si suspension en attente de signal
  *
  *******************************************************************************/
-VOID mnsuspIniPrendre()
+void mnsuspIniPrendre()
 {
-	INT Status;
 	INT i;
 	bool trouve = false;
 
-	for (i = 0; i < supGestion.nbTache; i++)
-	{
-		//	  int32 tacheId_dw=taskGetId(&supGestion.Tache[i]);
-		//	  int32 tacheCour_dw=taskIdSelf();
-		if (taskGetId(&supGestion.Tache[i]) == tacheGetId())
-		{
+	for( i = 0; i < supGestion.nbTache; i++ ) {
+		if( taskGetId( &supGestion.Tache[i] ) == tacheGetId() ) {
 
-			//    	  semSignal(supGestion.Tache[i].tacVersMon);
-			Status = semWait(supGestion.Tache[i].monVersTac);
+			semWait( supGestion.Tache[i].monVersTac );
 			trouve = true;
-			//          if (Status == ERROR)
-			//            {
-			//              printDebug ("Erreur tache %s rend semaphore \n", supGestion.Tache[i].Nom);
-			//              return;
-			//            }
 		}
 	}
-	if (false == trouve)
-	{
-		printDebug("_mnsuspIniPrendre : petit probleme tache %d\n", i);
+	if( false == trouve ) {
+		printDebug( "_mnsuspIniPrendre : petit probleme tache %d\n", i );
 	}
 	return;
 }
 
-VOID mnsuspIniDonner()
+void mnsuspIniDonner()
 {
 	INT Status;
 	INT i;
-	for (i = 0; i < supGestion.nbTache; i++)
-	{
-		if (taskGetId(&supGestion.Tache[i]) == tacheGetId())
-		{
-			Status = semSignal(supGestion.Tache[i].monVersTac);
-			if (Status == ERROR)
-			{
+	for( i = 0; i < supGestion.nbTache; i++ ) {
+		if( taskGetId( &supGestion.Tache[i] ) == tacheGetId() ) {
+			Status = semSignal( supGestion.Tache[i].monVersTac );
+			if( Status == ERROR ) {
 #ifdef VXSIM
 				printDebug ("Erreur tache %s rend semaphore \n",
 						supGestion.Tache[i].nomTache);
@@ -706,7 +690,7 @@ INT crt_type_init()
 /*       procedure de recherche des cartes                */
 /*                                                        */
 /**********************************************************/
-VOID crt_rec_carte()
+void crt_rec_carte()
 {
 
 	return;

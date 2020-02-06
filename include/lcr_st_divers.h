@@ -29,6 +29,7 @@ int lcr_st_edf (INT, INT, INT, STRING, INT, struct usr_ztf *, INT, INT *);
 int lcr_st_btr (INT, INT, INT, STRING, INT, struct usr_ztf *, INT, INT *);
 int lcr_st_dbg (INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess);
 int lcr_trace(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess);
+int lcr_tst_info_eri(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess) ;
 
 /* ********************************
  * FIN DE lcr_st_abe.h

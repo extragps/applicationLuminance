@@ -36,6 +36,7 @@
 #include "etaSyst.h"
 
 #include "io/iolib.h"
+#include "cpu432/cpu432.h"
 /* brute.                                                       */
 
 /* ********************************

@@ -30,10 +30,13 @@
 /* FICHIERS INCLUDE					*/
 /* ********************************	*/
 
+#include <mq.h>
+#include <pipe.h>
 #include <sys/select.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <superviseur.h>
 #include "standard.h"
 #include "define.h"
 #include "mon_inc.h"
@@ -43,15 +46,12 @@
 #include "vct_str.h"
 #include "lcr_util.h"
 #include "supRun.h"
-#include "Superviseur.h"
 #include "extLib.h"
-#include "MQ.h"
 #include "Tache.h"
 #include "x01_var.h"
 #include "spcLib.h"
 #include "perfLib.h"
 #include "ficTrace.h"
-#include "Pipe.h"
 #include "anaSys.h"
 #include "lcr_util.h"
 #include "etaSyst.h"

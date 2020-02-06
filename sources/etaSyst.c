@@ -30,9 +30,9 @@
 /* FICHIERS D'INCLUDE           	*/
 /* ********************************	*/
 
+#include <superviseur.h>
 #include "standard.h"
 #include "Tache.h"
-#include "Superviseur.h"
 #include "mon_debug.h"
 #include "mon_ext.h"
 #include "limits.h"

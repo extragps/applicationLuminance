@@ -20,7 +20,7 @@
  * LISTE DES INCLUDES
  * ************************************* */
 #include "stdio.h"
-#include "Semaphore.h"
+#include "semaphore.h"
 #include "mon_debug.h"
 #include "define.h"
 #include "portage.h"

@@ -26,6 +26,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <pipe.h>
 
 #include "standard.h"
 #include "portage.h"
@@ -35,7 +36,6 @@
 #include "x01_str.h"
 #include "x01_var.h"
 #include "etaSyst.h"
-#include "Pipe.h"
 #include "mon_debug.h"
 
 #include "kcommon.h"

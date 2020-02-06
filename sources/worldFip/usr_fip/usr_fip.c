@@ -40,6 +40,7 @@
 #ifdef LINUX
 #include <stdio.h>
 #endif
+#include "lcr_trc.h"
 
 /* ******************************** */
 /* VARIABLES GLOBALES				*/

@@ -45,6 +45,7 @@ bool essIsDefautCom(void);
 bool essIsDefaut(void);
 void essGetInfos(char *,int);
 bool essDefautAlim(void);
+int essGetAlim(void);
 void essSetConsigne(bool consigne_b);
 bool essIsConsigne(void);
 bool esIsSabordage(void);

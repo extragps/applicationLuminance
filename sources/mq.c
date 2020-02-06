@@ -1,7 +1,7 @@
 
-#include "MQ.h"
+#include <mq.h>
+#include <superviseur.h>
 #include "standard.h"
-#include "Superviseur.h"
 #ifndef VXWORKS
 #include "portage.h"
 #endif

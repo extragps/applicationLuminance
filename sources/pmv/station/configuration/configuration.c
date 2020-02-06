@@ -19,24 +19,22 @@
 
 static void configInitDynamique(void);
 
-
 /* ************************************
  * DECLARATION DES VARIABLES LOCALES
  * ************************************	*/
 
-static ConfigStatique configStatique={0,0,2,50000,127,192,255,2,10,5,20,36};
-static ConfigDynamique configDynamique={0,false,false,false,0,false};
-static Kmutex *configMutex_pt=NULL;
+static ConfigStatique configStatique = { 0, 0, 2, 50000, 127, 192, 255, 2, 10,
+		5, 20, 36 };
+static ConfigDynamique configDynamique = { 0, false, false, false, 0, false };
+static Kmutex *configMutex_pt = NULL;
 
 /* ************************************
  * FONCTIONS DU MODULE
  * ************************************ */
 
+void configInit() {
 
-void configInit()
-{
-
-	configMutex_pt=kmutexNew();
+	configMutex_pt = kmutexNew();
 	/* Initialisation de la structure de gestion de la SRAM */
 	/* TODO : Etudier ce que l'on fait avec le message courant */
 //	configSetMessCour(NULL);
@@ -49,33 +47,20 @@ void configInit()
 	/* Chargement au besoin d'une configuration. */
 
 	/* TODO : report de la fonctionnalite au niveau de la configuration globale... */
-//	if(false==ioIsResetCfg())
-//	{
-//		configLoad();
-//	}
-//	else
-//	{
-//		configSave();
-//	}
-//	/* Au demarrage on force l'arret du rebouclage. */
-//	configSetRebouclage(false);
 
 }
-void configTerm()
-{
+void configTerm() {
 	configParamTerm();
 	configSramTerm();
 	kmutexDelete(configMutex_pt);
 }
 
-void configStatiqueSet(void *config_p)
-{
-	configStatique=*((ConfigStatique *)config_p);
+void configStatiqueSet(void *config_p) {
+	configStatique = *((ConfigStatique*) config_p);
 }
 
-void configStatiqueGet(void *config_p)
-{
-	*((ConfigStatique *)config_p)=configStatique;
+void configStatiqueGet(void *config_p) {
+	*((ConfigStatique*) config_p) = configStatique;
 }
 /* _configSramInit
  * ===============
@@ -83,187 +68,160 @@ void configStatiqueGet(void *config_p)
  * realise une reinitialisatio de la sram.
  * */
 
-void configInitStatique(void)
-{
-ConfigStatique *conf_pt=&configStatique;
+void configInitStatique(void) {
+	ConfigStatique *conf_pt = &configStatique;
 	int indice;
 
 	/* On force a zero la configuration. */
-	memset(conf_pt,0,sizeof(ConfigStatique));
+	memset(conf_pt, 0, sizeof(ConfigStatique));
 
-	conf_pt->seuilJour_dw=100;
-	conf_pt->seuilSurb_dw=5000;
-	conf_pt->tempoAnim_dw=60;
-	conf_pt->tempoTest_dw=10;
-	conf_pt->periodeTest_dw=5;
-	conf_pt->periodeTestPixel_dw=86400; // Un test par jour....
-	conf_pt->periodeScrutAff_dw=40;
-	conf_pt->periodeScrutThl_dw=30;
-	conf_pt->periodeScrutEs_dw=10;
-	conf_pt->paddingBefore_dw=1;
-	conf_pt->paddingAfter_dw=1;
-	conf_pt->seuilPixelMaxAff=2;
-	conf_pt->seuilPixelMinAff=0;
-	conf_pt->adresseEs=1;
-	conf_pt->valNuit=50;
-	conf_pt->valJour=100;
-	conf_pt->valSurb=187;
-	conf_pt->numPort_dw=2001;
-	conf_pt->nbThls=2;
-	conf_pt->seuilChauffage_dw=0;
-	for(indice=0;indice<THL_NB_MAX;indice++)
-	{
-		conf_pt->adresseThl[indice]=indice+1;
+	conf_pt->seuilJour_dw = 100;
+	conf_pt->seuilSurb_dw = 5000;
+	conf_pt->tempoAnim_dw = 60;
+	conf_pt->tempoTest_dw = 10;
+	conf_pt->periodeTest_dw = 5;
+	conf_pt->periodeTestPixel_dw = 86400; // Un test par jour....
+	conf_pt->periodeScrutAff_dw = 40;
+	conf_pt->periodeScrutThl_dw = 30;
+	conf_pt->periodeScrutEs_dw = 10;
+	conf_pt->paddingBefore_uw = 1;
+	conf_pt->paddingAfter_uw = 1;
+	conf_pt->modeDegrade_uw = 0;
+	conf_pt->unused_uw = 0;
+	conf_pt->seuilPixelMaxAff = 2;
+	conf_pt->seuilPixelMinAff = 0;
+	conf_pt->adresseEs = 1;
+	conf_pt->valNuit = 50;
+	conf_pt->valJour = 100;
+	conf_pt->valSurb = 187;
+	conf_pt->numPort_dw = 2001;
+	conf_pt->nbThls = 2;
+	conf_pt->seuilChauffage_dw = 0;
+	for (indice = 0; indice < THL_NB_MAX; indice++) {
+		conf_pt->adresseThl[indice] = indice + 1;
 	}
-	conf_pt->modeThl[0]=0xC3;
-	conf_pt->modeThl[1]=0xA8;
-	conf_pt->nbAfficheurs=36;
-	for(indice=0;indice<conf_pt->nbAfficheurs;indice++)
-	{
-		conf_pt->adresseAfficheur[indice]=indice+1;
-		conf_pt->sortieAfficheur[indice]=-1;
-		conf_pt->caissonAfficheur[indice]=0;
+	conf_pt->modeThl[0] = 0xC3;
+	conf_pt->modeThl[1] = 0xA8;
+	conf_pt->nbAfficheurs = 36;
+	for (indice = 0; indice < conf_pt->nbAfficheurs; indice++) {
+		conf_pt->adresseAfficheur[indice] = indice + 1;
+		conf_pt->sortieAfficheur[indice] = -1;
+		conf_pt->caissonAfficheur[indice] = 0;
 	}
-	for(;indice<AFFICHEUR_NB_MAX;indice++)
-	{
-		conf_pt->adresseAfficheur[indice]=-1;
+	for (; indice < AFFICHEUR_NB_MAX; indice++) {
+		conf_pt->adresseAfficheur[indice] = -1;
 	}
 }
-static void configInitDynamique(void)
-{
-ConfigDynamique *dyn_pt=&configDynamique;
-int indice;
+static void configInitDynamique(void) {
+	ConfigDynamique *dyn_pt = &configDynamique;
+	int indice;
 
-	dyn_pt->numAffichage_dw=-1;
-	dyn_pt->valCour_dw=0;
-	dyn_pt->on_b=false;
-	dyn_pt->lumCour_uc=0;
-	dyn_pt->lumSeuil_uc=0;
-	for(indice=0;indice<NB_CAISSON;indice++)
-	{
-	dyn_pt->lumChanged_b[indice]=false;
-	dyn_pt->lumAuto_b[indice]=true;
-	dyn_pt->lumVal_uc[indice]=0;
-	dyn_pt->enCours_b[indice]=false;
+	dyn_pt->numAffichage_dw = -1;
+	dyn_pt->valCour_dw = 0;
+	dyn_pt->on_b = false;
+	dyn_pt->lumCour_uc = 0;
+	dyn_pt->lumSeuil_uc = 0;
+	for (indice = 0; indice < NB_CAISSON; indice++) {
+		dyn_pt->lumChanged_b[indice] = false;
+		dyn_pt->lumAuto_b[indice] = true;
+		dyn_pt->lumVal_uc[indice] = 0;
+		dyn_pt->enCours_b[indice] = false;
 	}
-	for(indice=0;indice<AFFICHEUR_NB_MAX;indice++)
-	{
-		dyn_pt->etatAfficheur_dw[indice]=0;
+	for (indice = 0; indice < AFFICHEUR_NB_MAX; indice++) {
+		dyn_pt->etatAfficheur_dw[indice] = 0;
 	}
-	dyn_pt->ok_b=false;
-	dyn_pt->reprise_b=true;
-	dyn_pt->chargementEnCours_b=false;
-	dyn_pt->init_b=true;
-	dyn_pt->tempoScrut_dw=0;
-	dyn_pt->rebouclage_b=false;
+	dyn_pt->ok_b = false;
+	dyn_pt->reprise_b = true;
+	dyn_pt->chargementEnCours_b = false;
+	dyn_pt->init_b = true;
+	dyn_pt->tempoScrut_dw = 0;
+	dyn_pt->rebouclage_b = false;
 }
 
-int32 configGetAdresseAfficheur(int32 numero)
-{
-	int32 retour=-1;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configGetAdresseAfficheur : numero incorrect %ld",numero);
-	}
-	else
-	{
-		retour=configStatique.adresseAfficheur[numero];
+int32 configGetAdresseAfficheur(int32 numero) {
+	int32 retour = -1;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configGetAdresseAfficheur : numero incorrect %ld", numero);
+	} else {
+		retour = configStatique.adresseAfficheur[numero];
 	}
 	return retour;
 }
 
-bool configSetAdresseAfficheur(int32 numero,int32 valeur)
-{
-	bool retour_b=true;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configSetAdresseAfficheur : numero incorrect %ld",numero);
-		retour_b=false;
-	}
-	else
-	{
-		configStatique.adresseAfficheur[numero]=valeur;
+bool configSetAdresseAfficheur(int32 numero, int32 valeur) {
+	bool retour_b = true;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configSetAdresseAfficheur : numero incorrect %ld", numero);
+		retour_b = false;
+	} else {
+		configStatique.adresseAfficheur[numero] = valeur;
 
 	}
 	return retour_b;
 
 }
 
-int32 configGetSortieAfficheur(int32 numero)
-{
-	int32 retour=-1;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configGetSortieAfficheur : numero incorrect %ld",numero);
-	}
-	else
-	{
-		retour=configStatique.sortieAfficheur[numero];
+int32 configGetSortieAfficheur(int32 numero) {
+	int32 retour = -1;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configGetSortieAfficheur : numero incorrect %ld", numero);
+	} else {
+		retour = configStatique.sortieAfficheur[numero];
 	}
 	return retour;
 }
 
-bool configSetSortieAfficheur(int32 numero,int32 valeur)
-{
-	bool retour_b=true;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configSetSortieAfficheur : numero incorrect %ld",numero);
-		retour_b=false;
-	}
-	else
-	{
-		configStatique.sortieAfficheur[numero]=valeur;
+bool configSetSortieAfficheur(int32 numero, int32 valeur) {
+	bool retour_b = true;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configSetSortieAfficheur : numero incorrect %ld", numero);
+		retour_b = false;
+	} else {
+		configStatique.sortieAfficheur[numero] = valeur;
 
 	}
 	return retour_b;
 
 }
-int32 configGetCaissonAfficheur(int32 numero)
-{
-	int32 retour=-1;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configGetCaissonAfficheur : numero incorrect %ld",numero);
-	}
-	else
-	{
-		retour=configStatique.caissonAfficheur[numero];
+int32 configGetCaissonAfficheur(int32 numero) {
+	int32 retour = -1;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configGetCaissonAfficheur : numero incorrect %ld", numero);
+	} else {
+		retour = configStatique.caissonAfficheur[numero];
 	}
 	return retour;
 }
 
-bool configSetCaissonAfficheur(int32 numero,int32 valeur)
-{
-	bool retour_b=true;
-	if((numero<0)||(numero>=AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configSetCaissonAfficheur : numero incorrect %ld",numero);
-		retour_b=false;
-	}
-	else
-	{
-		configStatique.caissonAfficheur[numero]=valeur;
+bool configSetCaissonAfficheur(int32 numero, int32 valeur) {
+	bool retour_b = true;
+	if ((numero < 0) || (numero >= AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO,
+				"configSetCaissonAfficheur : numero incorrect %ld", numero);
+		retour_b = false;
+	} else {
+		configStatique.caissonAfficheur[numero] = valeur;
 
 	}
 	return retour_b;
 
 }
 
-bool configSetNbAfficheurs(int32 nombre)
-{
-	bool retour_b=true;
-	if((nombre<0)||(nombre>AFFICHEUR_NB_MAX))
-	{
-		klogPut(NULL,LOG_INFO,"configSetNbAfficheurs : nombre incorrect %ld",nombre);
-		retour_b=false;
-	}
-	else
-	{
-		configStatique.nbAfficheurs=nombre;
-		if((nombre+1<AFFICHEUR_NB_MAX))
-		{
-			configStatique.adresseAfficheur[nombre+1]=-1;
+bool configSetNbAfficheurs(int32 nombre) {
+	bool retour_b = true;
+	if ((nombre < 0) || (nombre > AFFICHEUR_NB_MAX)) {
+		klogPut(NULL, LOG_INFO, "configSetNbAfficheurs : nombre incorrect %ld",
+				nombre);
+		retour_b = false;
+	} else {
+		configStatique.nbAfficheurs = nombre;
+		if ((nombre + 1 < AFFICHEUR_NB_MAX)) {
+			configStatique.adresseAfficheur[nombre + 1] = -1;
 		}
 	}
 	return retour_b;
@@ -465,93 +423,68 @@ bool configSetNbAfficheurs(int32 nombre)
 //	kmutexUnlock(configMutex_pt);
 //}
 //
-
-int32 configGetValJour()
-{
+int32 configGetValJour() {
 	return configStatique.valJour;
 }
 
-int32 configGetValNuit()
-{
+int32 configGetValNuit() {
 	return configStatique.valNuit;
 }
 
-int32 configGetValSurb()
-{
+int32 configGetValSurb() {
 	return configStatique.valSurb;
 }
 
-
-bool configSetSeuilJour(int32 val)
-{
-	configStatique.seuilJour_dw=val;
+bool configSetSeuilJour(int32 val) {
+	configStatique.seuilJour_dw = val;
 	return true;
 }
-bool configSetValJour(int32 val)
-{
-	configStatique.valJour=val;
+bool configSetValJour(int32 val) {
+	configStatique.valJour = val;
 	return true;
 }
-bool configSetValNuit(int32 val)
-{
-	configStatique.valNuit=val;
+bool configSetValNuit(int32 val) {
+	configStatique.valNuit = val;
 	return true;
 }
-bool configSetValSurb(int32 val)
-{
-	configStatique.valSurb=val;
+bool configSetValSurb(int32 val) {
+	configStatique.valSurb = val;
 	return true;
 }
 
-int32 configGetSeuilJour()
-{
+int32 configGetSeuilJour() {
 	return configStatique.seuilJour_dw;
 }
 
-static int _configGetLuminosite(bool forceSurb_b,bool forceNuit_b)
-{
-	int retour=configStatique.valNuit;
-	if(false==forceNuit_b)
-	{
-	if(false==forceSurb_b)
-	{
+//static int _configGetLuminosite(bool forceSurb_b, bool forceNuit_b) {
+//	int retour = configStatique.valNuit;
+//	if (false == forceNuit_b) {
+//		if (false == forceSurb_b) {
+//
+//			if (configIsAuto()) {
+//				if (configDynamique.valCour_dw > configStatique.seuilJour_dw) {
+//					if (configDynamique.valCour_dw
+//							> configStatique.seuilSurb_dw) {
+//						retour = configStatique.valSurb;
+//					} else {
+//						retour = configStatique.valJour;
+//					}
+//				}
+//			} else {
+//				if (configIsSurb()) {
+//					retour = configStatique.valSurb;
+//				} else if (configIsJour()) {
+//					retour = configStatique.valJour;
+//				}
+//			}
+//		} else {
+//			retour = configStatique.valSurb;
+//		}
+//	}
+//	return retour;
+//}
 
-		if(configIsAuto())
-		{
-			if(configDynamique.valCour_dw>configStatique.seuilJour_dw)
-			{
-				if(configDynamique.valCour_dw>configStatique.seuilSurb_dw)
-				{
-					retour=configStatique.valSurb;
-				}
-				else
-				{
-					retour=configStatique.valJour;
-				}
-			}
-		}
-		else
-		{
-			if(configIsSurb())
-			{
-				retour=configStatique.valSurb;
-			}
-			else if(configIsJour())
-			{
-				retour=configStatique.valJour;
-			}
-		}
-	}
-	else
-	{
-		retour=configStatique.valSurb;
-	}
-	}
-	return retour;
-}
-
-int32 configGetNbAfficheurs()
-{
+int32 configGetNbAfficheurs() {
 	return configStatique.nbAfficheurs;
 }
 
@@ -560,130 +493,106 @@ int32 configGetNbAfficheurs()
  * Pour allumage et extinction du panneau.
  * */
 
-bool configIsOn()
-{
+bool configIsOn() {
 	return configDynamique.on_b;
 }
 
-bool configSetOn(bool val)
-{
-	bool retour_b=false;
-	if(val!=configDynamique.on_b)
-	{
-		configDynamique.on_b=val;
-		retour_b=val;
+bool configSetOn(bool val) {
+	bool retour_b = false;
+	if (val != configDynamique.on_b) {
+		configDynamique.on_b = val;
+		retour_b = val;
 	}
 	return retour_b;
 }
 
-static void _configSetLuminositeChanged(bool val)
-{
-int nbCaissons=configGetNbCaissons();
-int indice;
-	for(indice=0;indice<nbCaissons;indice++)
-	{
-		if(configDynamique.lumAuto_b[indice]||(false==val))
-		{
-			configDynamique.lumChanged_b[indice]=val;
+static void _configSetLuminositeChanged(bool val) {
+	int nbCaissons = configGetNbCaissons();
+	int indice;
+	for (indice = 0; indice < nbCaissons; indice++) {
+		if (configDynamique.lumAuto_b[indice] || (false == val)) {
+			configDynamique.lumChanged_b[indice] = val;
 		}
 	}
 }
-uint8 configCalculerLuminositeCourante()
-{
-uint8 retour_uc=0;
-int seuilCour=0;
-int seuilAuto=0;
+uint8 configCalculerLuminositeCourante() {
+	uint8 retour_uc = 0;
+	int seuilCour = 0;
+	int seuilAuto = 0;
 	/* Recuperer la consigne a partir de la luminosite courante */
-	while((seuilCour<pip_nb_seuil_cellule)&&(configDynamique.valCour_dw>pip_seuil_cellule[seuilCour].lux))
-	{
-		retour_uc=pip_seuil_cellule[seuilCour].tens_diode;
-		seuilAuto=seuilCour;
+	while ((seuilCour < pip_nb_seuil_cellule)
+			&& (configDynamique.valCour_dw > pip_seuil_cellule[seuilCour].lux)) {
+		retour_uc = pip_seuil_cellule[seuilCour].tens_diode;
+		seuilAuto = seuilCour;
 		seuilCour++;
 	}
-	configDynamique.lumSeuil_uc=seuilAuto;
+	configDynamique.lumSeuil_uc = seuilAuto;
 	return retour_uc;
 }
 
-bool configSetLuminositeCourante(uint8 lum)
-{
-	bool retour=false;
-	if(configDynamique.lumCour_uc!=lum)
-	{
-		retour=true;
-		printf("Changement de luminosite %d pour %d\n",configDynamique.lumCour_uc,lum);
-		configDynamique.lumCour_uc=lum;
+bool configSetLuminositeCourante(uint8 lum) {
+	bool retour = false;
+	if (configDynamique.lumCour_uc != lum) {
+		retour = true;
+		printf("Changement de luminosite %d pour %d\n",
+				configDynamique.lumCour_uc, lum);
+		configDynamique.lumCour_uc = lum;
 		/* Propager le changement de luminosite a tous les caissons */
 		_configSetLuminositeChanged(true);
 	}
 	return retour;
 }
 
-void configSetLuminositeChanged(bool val)
-{
-int nbCaissons=configGetNbCaissons();
-int indice;
-	for(indice=0;indice<nbCaissons;indice++)
-	{
-		configDynamique.lumChanged_b[indice]=val;
+void configSetLuminositeChanged(bool val) {
+	int nbCaissons = configGetNbCaissons();
+	int indice;
+	for (indice = 0; indice < nbCaissons; indice++) {
+		configDynamique.lumChanged_b[indice] = val;
 	}
 }
 
-bool configLuminositeIsChanged()
-{
-bool retour_b=false;
-int32 nbCaissons_dw=configGetNbCaissons();
-int32 indice_dw;
-	for(indice_dw=0;(indice_dw<nbCaissons_dw)&&(false==retour_b);indice_dw++)
-	{
-		retour_b=configDynamique.lumChanged_b[indice_dw];
+bool configLuminositeIsChanged() {
+	bool retour_b = false;
+	int32 nbCaissons_dw = configGetNbCaissons();
+	int32 indice_dw;
+	for (indice_dw = 0; (indice_dw < nbCaissons_dw) && (false == retour_b);
+			indice_dw++) {
+		retour_b = configDynamique.lumChanged_b[indice_dw];
 	}
 	return retour_b;
 }
 
-bool configLumIsChangedCaisson(int32 numCaisson)
-{
+bool configLumIsChangedCaisson(int32 numCaisson) {
 	return configDynamique.lumChanged_b[numCaisson];
 }
 
-void configLuminositeSetChangedCaisson(int32 numCaisson,bool val)
-{
-	configDynamique.lumChanged_b[numCaisson]=val;
+void configLuminositeSetChangedCaisson(int32 numCaisson, bool val) {
+	configDynamique.lumChanged_b[numCaisson] = val;
 }
 
-
-void configLumSetChangedCaisson(int32 numCaisson,bool val)
-{
-	configDynamique.lumChanged_b[numCaisson]=val;
+void configLumSetChangedCaisson(int32 numCaisson, bool val) {
+	configDynamique.lumChanged_b[numCaisson] = val;
 }
 
-
-void configLumSetAutoCaisson(int32 numCaisson,bool val)
-{
-	configDynamique.lumAuto_b[numCaisson]=val;
-	configDynamique.lumChanged_b[numCaisson]=true;
+void configLumSetAutoCaisson(int32 numCaisson, bool val) {
+	configDynamique.lumAuto_b[numCaisson] = val;
+	configDynamique.lumChanged_b[numCaisson] = true;
 }
 
-void configLumSetValCaisson(int32 numCaisson,uint8 val)
-{
-	if(configDynamique.lumVal_uc[numCaisson]!=val)
-	{
-		configDynamique.lumVal_uc[numCaisson]=val;
-		configDynamique.lumChanged_b[numCaisson]=true;
+void configLumSetValCaisson(int32 numCaisson, uint8 val) {
+	if (configDynamique.lumVal_uc[numCaisson] != val) {
+		configDynamique.lumVal_uc[numCaisson] = val;
+		configDynamique.lumChanged_b[numCaisson] = true;
 	}
 }
 
-void configSetEnCoursCaisson(int32 numCaisson,bool val)
-{
-		configDynamique.enCours_b[numCaisson]=val;
+void configSetEnCoursCaisson(int32 numCaisson, bool val) {
+	configDynamique.enCours_b[numCaisson] = val;
 }
 
-
-bool configIsEnCoursCaisson(int32 numCaisson)
-{
-	return	configDynamique.enCours_b[numCaisson];
+bool configIsEnCoursCaisson(int32 numCaisson) {
+	return configDynamique.enCours_b[numCaisson];
 }
-
-
 
 /* configCalculerLuminositeCourante
  * ================================
@@ -691,80 +600,65 @@ bool configIsEnCoursCaisson(int32 numCaisson)
  * appliquer au panneau. Sur reception des informations du
  * panneau, la luminosite va être réappliquée automatiquement
  * au besoin. */
-uint8 configLumCalculer(int32 numCaisson)
-{
-uint8 retour_uc=configDynamique.lumCour_uc;
-	if(!configDynamique.lumAuto_b[numCaisson])
-	{
-		retour_uc=pip_seuil_cellule[MIN(pip_nb_seuil_cellule-1,configDynamique.lumVal_uc[numCaisson])].tens_diode;
+uint8 configLumCalculer(int32 numCaisson) {
+	uint8 retour_uc = configDynamique.lumCour_uc;
+	if (!configDynamique.lumAuto_b[numCaisson]) {
+		retour_uc = pip_seuil_cellule[MIN(pip_nb_seuil_cellule - 1,
+				configDynamique.lumVal_uc[numCaisson])].tens_diode;
 	}
 	return retour_uc;
 }
-uint8 configLumLireSeuil(int32 numCaisson)
-{
-uint8 retour_uc=configDynamique.lumSeuil_uc;
-	if(!configDynamique.lumAuto_b[numCaisson])
-	{
-		retour_uc=MIN(pip_nb_seuil_cellule-1,configDynamique.lumVal_uc[numCaisson]);
+uint8 configLumLireSeuil(int32 numCaisson) {
+	uint8 retour_uc = configDynamique.lumSeuil_uc;
+	if (!configDynamique.lumAuto_b[numCaisson]) {
+		retour_uc = MIN(pip_nb_seuil_cellule - 1,
+				configDynamique.lumVal_uc[numCaisson]);
 	}
 	return retour_uc;
 }
 
-void configSetSurbDyn(bool val)
-{
-	if(val!=configDynamique.surb_b)
-	{
-		configDynamique.surb_b=val;
+void configSetSurbDyn(bool val) {
+	if (val != configDynamique.surb_b) {
+		configDynamique.surb_b = val;
 		configSetLuminositeChanged(true);
 	}
 }
 
-void configSetNuitDyn(bool val)
-{
-	if(val!=configDynamique.nuit_b)
-	{
-		configDynamique.nuit_b=val;
+void configSetNuitDyn(bool val) {
+	if (val != configDynamique.nuit_b) {
+		configDynamique.nuit_b = val;
 		configSetLuminositeChanged(true);
 	}
 }
 
-int32 configGetValCour()
-{
+int32 configGetValCour() {
 	return configDynamique.valCour_dw;
 }
 
-bool configSetValCour(int32 valeur_dw)
-{
-	bool retour=false;
-	if(valeur_dw!=configDynamique.valCour_dw)
-	{
-		retour=true;
-		configDynamique.valCour_dw=valeur_dw;
+bool configSetValCour(int32 valeur_dw) {
+	bool retour = false;
+	if (valeur_dw != configDynamique.valCour_dw) {
+		retour = true;
+		configDynamique.valCour_dw = valeur_dw;
 	}
 	return retour;
 }
-bool configSetOk(bool val)
-{
-	bool retour=false;
-	if(val!=configDynamique.ok_b)
-	{
-		configDynamique.ok_b=val;
-		retour=true;
+bool configSetOk(bool val) {
+	bool retour = false;
+	if (val != configDynamique.ok_b) {
+		configDynamique.ok_b = val;
+		retour = true;
 		/* Ajouter ici une erreur majeure */
-		if(val)
-		{
-			eriSupprimer(E_eriMajeure,ERI_DEF_PIP);
-		}
-		else
-		{
-			eriAjouter(E_eriMajeure,ERI_DEF_PIP);
+		if (val) {
+			eriSupprimer(E_eriMajeure, ERI_DEF_PIP);
+		} else {
+			eriAjouter(E_eriMajeure, ERI_DEF_PIP);
 		}
 	}
 	return retour;
 }
 
-bool configIsOk()
-{
+bool configIsOk() {
 	return configDynamique.ok_b;
 }
 //
@@ -800,341 +694,287 @@ bool configIsOk()
 //}
 //
 
-int32 configGetSeuilAffPixelMin(void)
-{
+int32 configGetSeuilAffPixelMin(void) {
 	return configStatique.seuilPixelMinAff;
 }
-int32 configGetSeuilAffPixelMax(void)
-{
+int32 configGetSeuilAffPixelMax(void) {
 	return configStatique.seuilPixelMaxAff;
 
 }
-int32 configGetSeuilModulePixelMin(void)
-{
+int32 configGetSeuilModulePixelMin(void) {
 	return configStatique.seuilPixelMinMod;
 
 }
-int32 configGetSeuilModulePixelMax(void)
-{
+int32 configGetSeuilModulePixelMax(void) {
 	return configStatique.seuilPixelMaxMod;
 }
-bool configSetSeuilAffPixelMin(int32 val)
-{
-	if(configStatique.seuilPixelMinAff!=val)
-	{
-		configStatique.seuilPixelMinAff=val;
+bool configSetSeuilAffPixelMin(int32 val) {
+	if (configStatique.seuilPixelMinAff != val) {
+		configStatique.seuilPixelMinAff = val;
 	}
 	return true;
 }
 
-bool configSetSeuilAffPixelMax(int32 val)
-{
-	if(configStatique.seuilPixelMaxAff!=val)
-	{
-		configStatique.seuilPixelMaxAff=val;
+bool configSetSeuilAffPixelMax(int32 val) {
+	if (configStatique.seuilPixelMaxAff != val) {
+		configStatique.seuilPixelMaxAff = val;
 	}
 	return true;
 }
-bool configSetSeuilModulePixelMin(int32 val)
-{
-	if(configStatique.seuilPixelMinMod!=val)
-	{
-		configStatique.seuilPixelMinMod=val;
+bool configSetSeuilModulePixelMin(int32 val) {
+	if (configStatique.seuilPixelMinMod != val) {
+		configStatique.seuilPixelMinMod = val;
 	}
 	return true;
 }
-bool configSetSeuilModulePixelMax(int32 val)
-{
-	if(configStatique.seuilPixelMaxMod!=val)
-	{
-		configStatique.seuilPixelMaxMod=val;
+bool configSetSeuilModulePixelMax(int32 val) {
+	if (configStatique.seuilPixelMaxMod != val) {
+		configStatique.seuilPixelMaxMod = val;
 	}
 	return true;
 }
 
-void configResetReprise()
-{
-	configDynamique.reprise_b=false;
+void configResetReprise() {
+	configDynamique.reprise_b = false;
 }
-bool configIsReprise()
-{
-	return configDynamique.reprise_b=false;
+bool configIsReprise() {
+	return configDynamique.reprise_b = false;
 }
 
-
-bool 	configSetSeuilSurb(int32 val)
-{
-	configStatique.seuilSurb_dw=val;
+bool configSetSeuilSurb(int32 val) {
+	configStatique.seuilSurb_dw = val;
 	return true;
 }
 
-int32 	configGetSeuilSurb(void)
-{
+int32 configGetSeuilSurb(void) {
 	return configStatique.seuilSurb_dw;
 }
 
-bool 	configSetTempoTest(int32 val)
-{
-	configStatique.tempoTest_dw=val;
+bool configSetTempoTest(int32 val) {
+	configStatique.tempoTest_dw = val;
 	return true;
 }
 
-int32 	configGetTempoTest(void)
-{
+int32 configGetTempoTest(void) {
 	return configStatique.tempoTest_dw;
 }
 
-bool 	configSetPeriodeTest(int32 val)
-{
-	configStatique.periodeTest_dw=val;
+bool configSetPeriodeTest(int32 val) {
+	configStatique.periodeTest_dw = val;
 	return true;
 }
 
-int32 	configGetPeriodeTest(void)
-{
+int32 configGetPeriodeTest(void) {
 	return configStatique.periodeTest_dw;
 }
 
-bool 	configSetTemperatureChauffage(int32 val)
-{
-	configStatique.seuilChauffage_dw=val;
+bool configSetTemperatureChauffage(int32 val) {
+	configStatique.seuilChauffage_dw = val;
 	return true;
 }
 
-int32 	configGetTemperatureChauffage(void)
-{
+int32 configGetTemperatureChauffage(void) {
 	return configStatique.seuilChauffage_dw;
 }
 
-
-bool 	configSetPeriodeTestPixel(int32 val)
-{
-	configStatique.periodeTestPixel_dw=val;
+bool configSetPeriodeTestPixel(int32 val) {
+	configStatique.periodeTestPixel_dw = val;
 	return true;
 }
 
-int32 	configGetPeriodeTestPixel(void)
-{
+int32 configGetPeriodeTestPixel(void) {
 	return configStatique.periodeTestPixel_dw;
 }
 
-bool 	configSetPeriodeAnimation(int32 val)
-{
-	configStatique.tempoAnim_dw=val;
+bool configSetPeriodeAnimation(int32 val) {
+	configStatique.tempoAnim_dw = val;
 	return true;
 }
 
-int32 	configGetPeriodeAnimation(void)
-{
+int32 configGetPeriodeAnimation(void) {
 	return configStatique.tempoAnim_dw;
 }
 
-bool configSetPaddingBefore(int32 pad_dw)
-{
-bool retour=false;
-	if(0<=pad_dw)
-	{
-		configStatique.paddingBefore_dw=pad_dw;
-		retour=true;
+bool configSetPaddingBefore(int32 pad_dw) {
+	bool retour = false;
+	if (0 <= pad_dw) {
+		configStatique.paddingBefore_uw = (uint16) pad_dw;
+		retour = true;
 	}
 	return retour;
 }
 
-int32 configGetPaddingBefore(void)
-{
-	return MAX(0,configStatique.paddingBefore_dw);
+int32 configGetPaddingBefore(void) {
+	return MAX(0, (int32 )configStatique.paddingBefore_uw);
 }
 
-bool configSetPaddingAfter(int32 pad_dw)
-{
-bool retour=false;
-	if(0<=pad_dw)
-	{
-	configStatique.paddingAfter_dw=pad_dw;
-		retour=true;
-	}
-	return retour;
+uint16 configGetModeDegrade(void) {
+	return configStatique.modeDegrade_uw;
 }
 
-int32 configGetPaddingAfter(void)
-{
-	return MAX(0,configStatique.paddingAfter_dw);
-}
-
-bool 	configSetPollingAff(int32 val)
-{
-	configStatique.periodeScrutAff_dw=val;
-	return true;
-}
-
-int32 	configGetPollingAff(void)
-{
-	return configStatique.periodeScrutAff_dw;
-}
-
-bool 	configSetPollingSonde(int32 val)
-{
-	configStatique.periodeScrutThl_dw=val;
-	return true;
-}
-
-int32 	configGetPollingSonde(void)
-{
-	return configStatique.periodeScrutThl_dw;
-}
-
-bool 	configSetPollingEs(int32 val)
-{
-
-	configStatique.periodeScrutEs_dw=val;
-	return true;
-}
-
-int32 	configGetPollingEs(void)
-{
-	return configStatique.periodeScrutEs_dw;
-}
-
-bool 	configSetNbThls(int32 val)
-{
-	bool retour_b=false;
-	if((val>=0)&&((val<THL_NB_MAX)))
-	{
-		configStatique.seuilSurb_dw=val;
-		retour_b=true;
+bool configSetModeDegrade(uint16 mode_uw) {
+	bool retour_b = false;
+	if (mode_uw <= 2) {
+		configStatique.modeDegrade_uw = mode_uw;
+		retour_b = true;
 	}
 	return retour_b;
 }
 
-int32 	configGetNbThls(void)
-{
+bool configSetPaddingAfter(int32 pad_dw) {
+	bool retour = false;
+	if (0 <= pad_dw) {
+		configStatique.paddingAfter_uw = (uint16) pad_dw;
+		retour = true;
+	}
+	return retour;
+}
+
+int32 configGetPaddingAfter(void) {
+	return MAX(0, (int32 )configStatique.paddingAfter_uw);
+}
+
+bool configSetPollingAff(int32 val) {
+	configStatique.periodeScrutAff_dw = val;
+	return true;
+}
+
+int32 configGetPollingAff(void) {
+	return configStatique.periodeScrutAff_dw;
+}
+
+bool configSetPollingSonde(int32 val) {
+	configStatique.periodeScrutThl_dw = val;
+	return true;
+}
+
+int32 configGetPollingSonde(void) {
+	return configStatique.periodeScrutThl_dw;
+}
+
+bool configSetPollingEs(int32 val) {
+
+	configStatique.periodeScrutEs_dw = val;
+	return true;
+}
+
+int32 configGetPollingEs(void) {
+	return configStatique.periodeScrutEs_dw;
+}
+
+bool configSetNbThls(int32 val) {
+	bool retour_b = false;
+	if ((val >= 0) && ((val < THL_NB_MAX))) {
+		configStatique.seuilSurb_dw = val;
+		retour_b = true;
+	}
+	return retour_b;
+}
+
+int32 configGetNbThls(void) {
 	return configStatique.nbThls;
 }
 
-int32 	configGetNbEss(void)
-{
+int32 configGetNbEss(void) {
 	/* Pour l'heure c'est fige, il y a une seule ES */
 	return 1;
 }
 
-bool 	configSetAdresseThl(int32 val,int32 adresse)
-{
-	bool retour_b=false;
-	if((val>=0&&(val<configGetNbThls())))
-	{
-		configStatique.adresseThl[val]=adresse;
+bool configSetAdresseThl(int32 val, int32 adresse) {
+	bool retour_b = false;
+	if ((val >= 0 && (val < configGetNbThls()))) {
+		configStatique.adresseThl[val] = adresse;
 	}
 	return retour_b;
 }
 
-int32 	configGetAdresseThl(int32 val)
-{
-	int retour=-1;
-	if((val>=0&&(val<configGetNbThls())))
-	{
-		retour=configStatique.adresseThl[val];
+int32 configGetAdresseThl(int32 val) {
+	int retour = -1;
+	if ((val >= 0 && (val < configGetNbThls()))) {
+		retour = configStatique.adresseThl[val];
 
 	}
 	return retour;
 }
 
-bool 	configSetModeThl(int32 val,int32 mode)
-{
-	bool retour_b=false;
-	if((val>=0&&(val<configGetNbThls())))
-	{
-		configStatique.modeThl[val]=mode;
+bool configSetModeThl(int32 val, int32 mode) {
+	bool retour_b = false;
+	if ((val >= 0 && (val < configGetNbThls()))) {
+		configStatique.modeThl[val] = mode;
 	}
 	return retour_b;
 }
 
-int32 	configGetModeThl(int32 val)
-{
-	int retour=-1;
-	if((val>=0&&(val<configGetNbThls())))
-	{
-		retour=configStatique.modeThl[val];
+int32 configGetModeThl(int32 val) {
+	int retour = -1;
+	if ((val >= 0 && (val < configGetNbThls()))) {
+		retour = configStatique.modeThl[val];
 
 	}
 	return retour;
 }
 
-bool 	configSetAdresseEs(int32 val)
-{
-	configStatique.adresseEs=val;
+bool configSetAdresseEs(int32 val) {
+	configStatique.adresseEs = val;
 	return true;
 }
-int32 configGetNumPortIp(void)
-{
+int32 configGetNumPortIp(void) {
 	return configStatique.numPort_dw;
 }
 
-void configSetNumPortIp(int32 val)
-{
-	configStatique.numPort_dw=val;
+void configSetNumPortIp(int32 val) {
+	configStatique.numPort_dw = val;
 }
 
-int32 	configGetAdresseEs(void)
-{
+int32 configGetAdresseEs(void) {
 	return configStatique.adresseEs;
 }
 
-bool configIsRebouclage()
-{
+bool configIsRebouclage() {
 	return configDynamique.rebouclage_b;
 }
 
-void configSetRebouclage(bool val)
-{
-	configDynamique.rebouclage_b=val;
+void configSetRebouclage(bool val) {
+	configDynamique.rebouclage_b = val;
 }
 
-bool configIsInit()
-{
+bool configIsInit() {
 	return configDynamique.init_b;
 }
 
-void configSetInit(bool val)
-{
-	configDynamique.init_b=val;
+void configSetInit(bool val) {
+	configDynamique.init_b = val;
 }
 
 /* Nouvelles fonctions pour le traitement de plusieurs caissons... */
 
-int32 configGetNbCaissons(void)
-{
+int32 configGetNbCaissons(void) {
 	return pip_nb_caisson;
 }
 
-int32 configGetNbAfficheursCaisson(int32 numCaisson)
-{
-	int retour_dw=-1;
-	if((0<=numCaisson)&&(numCaisson<pip_nb_caisson))
-		{
+int32 configGetNbAfficheursCaisson(int32 numCaisson) {
+	int retour_dw = -1;
+	if ((0 <= numCaisson) && (numCaisson < pip_nb_caisson)) {
 		T_pip_cf_caisson *caisson = &pip_cf_caisson[numCaisson];
-			retour_dw= caisson->nb_car;
-		}
-		return retour_dw;
-}
-
-int32 configGetPremAfficheurCaisson(int32 numCaisson)
-{
-int retour_dw=-1;
-	if((0<=numCaisson)&&(numCaisson<pip_nb_caisson))
-	{
-	T_pip_cf_caisson *caisson = &pip_cf_caisson[numCaisson];
-		retour_dw= caisson->num_car;
+		retour_dw = caisson->nb_car;
 	}
 	return retour_dw;
 }
 
-int32 configGetTypeCaisson(int32 numCaisson)
-{
-int retour_dw=N_AFF;
-	if((0<=numCaisson)&&(numCaisson<pip_nb_caisson))
-	{
-	T_pip_cf_caisson *caisson = &pip_cf_caisson[numCaisson];
-		retour_dw= caisson->type;
+int32 configGetPremAfficheurCaisson(int32 numCaisson) {
+	int retour_dw = -1;
+	if ((0 <= numCaisson) && (numCaisson < pip_nb_caisson)) {
+		T_pip_cf_caisson *caisson = &pip_cf_caisson[numCaisson];
+		retour_dw = caisson->num_car;
+	}
+	return retour_dw;
+}
+
+int32 configGetTypeCaisson(int32 numCaisson) {
+	int retour_dw = N_AFF;
+	if ((0 <= numCaisson) && (numCaisson < pip_nb_caisson)) {
+		T_pip_cf_caisson *caisson = &pip_cf_caisson[numCaisson];
+		retour_dw = caisson->type;
 	}
 	return retour_dw;
 }

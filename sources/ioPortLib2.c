@@ -32,6 +32,7 @@
  * ********************************	*/
  
 #include <fcntl.h>
+#include <unistd.h>
 #include "standard.h"
 #include "define.h"
 #include "portage.h"
@@ -124,20 +125,19 @@ void ioPortResetDetecteur (void)
  * -	TRUE si le bit est leve.
  * --------------------------------	*/
 
-int ioPortLireAdresse (char *adresse)
+int ioPortLireAdresse( char *adresse )
 {
-int retour=0;
+	int retour = 0;
 #ifdef CPU432
-  int desc=open("/dev/fip",O_RDWR);
-  if(-1!=desc)
-  {
-  *adresse=~(*((char *)(FIP_BASE+0x20)));
-  printf("ioPortLireAdresse, adresse de la carte %d\n",(int)(*adresse));
-	retour=1;
-	close(desc);
-  }
+	int desc = open( "/dev/fip", O_RDWR );
+	if( -1 != desc ) {
+		*adresse = ~( *( (char*) ( FIP_BASE + 0x20 ) ) );
+		printf( "ioPortLireAdresse, adresse de la carte %d\n", (int) ( *adresse ) );
+		retour = 1;
+		close( desc );
+	}
 #endif
-  return retour;
+	return retour;
 }
 
 /* --------------------------------

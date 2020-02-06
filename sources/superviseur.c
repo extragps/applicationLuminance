@@ -43,8 +43,8 @@
  * ********************************	 */
 
 #include <stdlib.h>
+#include <superviseur.h>
 #include <time.h>
-#include "Superviseur.h"
 #include "mon_def.h"
 #include "standard.h"
 #include "mon_debug.h"

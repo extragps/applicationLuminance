@@ -42,7 +42,7 @@
 #ifdef LINUX
 #include "time.h"
 #endif
-#include "MQ.h"
+#include <mq.h>
 #include "kcommon.h"
 
 typedef struct QUEUE_ELEM

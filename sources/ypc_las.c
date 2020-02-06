@@ -52,7 +52,10 @@
  * LISTE DES INCLUDES
  * ********************************	*/
 
+#include <mq.h>
+#include <pipe.h>
 #include <string.h>
+#include <superviseur.h>
 #include "standard.h"
 #include "xdg_def.h"
 #include "xdg_str.h"
@@ -63,9 +66,6 @@
 #include "ted_prot.h"
 #include "det_prot.h"
 #include "tac_conf.h"
-#include "MQ.h"
-#include "Pipe.h"
-#include "Superviseur.h"
 #include "mon_debug.h"
 #include "ypc_las.h"
 #include "etaSyst.h"

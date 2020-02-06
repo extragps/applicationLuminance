@@ -34,6 +34,7 @@
  /-----------------------------------------------------------------------------/
  / FONCTIONS INTERNES :                                                        /
  /-------------------------------------------------------------------------DOC*/
+#include <superviseur.h>
 #include "standard.h"
 #include "define.h"
 #include "mon_inc.h"
@@ -70,7 +71,6 @@
 #include "lcr_trc.h"
 #include "lcr_cfs.h"
 #include "tst_vip.h"
-#include "Superviseur.h"
 #include "mon_debug.h"
 #include "tst_simu.h"
 #include "lcr_bk.h"
@@ -89,7 +89,10 @@
 #include "lcr_p.h"
 #include "lcr_st_divers.h"
 #include "lcr_tst.h"
+#include "lcr_tst_degrade.h"
+#include "lcr_tst_cfetoile.h"
 #include "lcr_pcp.h"
+#include "lcr_pcp_cmd.h"
 #include "lcr_tst_def.h"
 #include "lcr_cfid.h"
 #include "identLib.h"
@@ -227,9 +230,16 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	} else if (0==strncmp(&buffer[i], "TST TEMP", 8))
 	{
 		lcr_temp(las, mode, nbcar, buffer, i, pt_mess);
-	} else if (0==strncmp(&buffer[i],  "TST SCC", 7))
-	{
-		config = lcr_tst_sc_pmv(las, mode, nbcar, buffer, i, pt_mess);
+	} else if (_chaineDebutePar(&buffer[i], LCR_PCP_TST_INFO_ERI)) {
+		config = lcr_tst_info_eri(las, mode, nbcar, buffer, i, pt_mess);
+	} else if (_chaineDebutePar(&buffer[i], LCR_PCP_TST_CFETOILE)) {
+		config = lcr_tst_cfetoile(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
+	} else if (_chaineDebutePar(&buffer[i], LCR_PCP_TST_DEGRADE)) {
+		config = lcr_tst_degrade(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
+	} else if (_chaineDebutePar(&buffer[i], LCR_PCP_TST_SCC)) {
+		config = lcr_tst_scc(las, mode, nbcar, buffer, i, pt_mess);
+	} else if (_chaineDebutePar(&buffer[i], LCR_PCP_TST_CFSC)) {
+		config = lcr_tst_cfsc(las, mode, nbcar, buffer, i, pt_mess);
 	}
 	else if (dv1_scmp(&buffer[i], (STRING) "TST CFSP", strlen("TST_CFSP")))
 	{
@@ -251,8 +261,7 @@ static VOID analyse_syntaxique(INT las, INT mode, INT nbcar, STRING buffer, stru
 	else if (0==strncmp(&buffer[i],  "CFPP", 4))
 	{
 		config = lcr_cfpp(las, mode, nbcar, buffer, i, pt_mess, FALSE, &bloc);
-	} else if (0==strncmp(&buffer[i],  "CF*", 3))
-	{
+	} else if (_chaineDebutePar(&buffer[i],LCR_PCP_CFETOILE)) {
 		config = cf0_cf(las, mode, nbcar, buffer, i, pt_mess);
 	}
 	/* XG : Ajout de la commande CFAL pour la configuration des

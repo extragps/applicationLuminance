@@ -22,10 +22,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <pipe.h>
 #include "standard.h"
 #include "define.h"
 #include "mon_debug.h"
-#include "Pipe.h"
 
 
 #define DEBUG 0

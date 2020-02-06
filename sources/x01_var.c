@@ -1,6 +1,6 @@
 #ifdef VXWORKS
 #include "vxworks.h"
-#include "MQ.h"
+#include "mq.h"
 #endif
 #include "standard.h"
 #include "mon_inc.h"

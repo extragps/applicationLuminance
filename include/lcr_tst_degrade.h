@@ -1,8 +1,8 @@
 
 /* ************************************************************************	
  * Auteur 	: X.GAILLARD
- * Date 	: 21/10/05
- * Fichier	: lcr_sc.h
+ * Date 	: 13/12/00
+ * Fichier	: lcr_tst_degrade.h
  * Objet	: Prototype des fonctions du module.
  * ************************************************************************
  * Historique des modifications
@@ -10,24 +10,16 @@
  * 01a,13Dec00,xag  creation.
  * ************************************************************************	*/
 
-#ifndef _LCR_SC_H
-#define _LCR_SC_H
+#ifndef _TST_SC_DEGRADE_H
+#define _TST_SC_DEGRADE_H
 
 /* ********************************
  * PROTOTYPE DES FONCTIONS
  * ********************************	*/
 
-void lcr_tst_sc_init (void);
-int lcr_tst_scc (INT, INT, INT, STRING, INT, struct usr_ztf *);
-int lcr_tst_cfsc (INT, INT, INT, STRING, INT, struct usr_ztf *);
-void lcr_tst_sc_ft_init (void);
-void lcr_tst_sc_ft (INT, INT, INT, STRING, INT, struct usr_ztf *);
-void lcr_tst_sc_cc_init (void);
-void lcr_tst_sc_cc (INT, INT, INT, STRING, INT, struct usr_ztf *);
-void lcr_tst_sc_frc_init (void);
-void lcr_tst_sc_frc (INT, INT, INT, STRING, INT, struct usr_ztf *);
+int lcr_tst_degrade(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess, INT flg_fin, INT * bloc);
 
 /* ********************************
- * FIN DE lcr_sc.h
+ * FIN DE tst_simu.h
  * ********************************	*/
 #endif

@@ -1,4 +1,6 @@
+#include <mq.h>
 #include <stdio.h>
+#include <superviseur.h>
 #include "kcommon.h"
 #include "klog.h"
 #include "pip_def.h"
@@ -22,12 +24,12 @@
 #include "configurationSram.h"
 
 #include "standard.h"
-#include "MQ.h"
 #include "mon_def.h"
 #include "mon_str.h"
 #include "mon_pro.h"
 #include "etaSyst.h"
-#include "Superviseur.h"
+#include "lcr_trc.h"
+#include "rdtComm.h"
 
 static int32 _lumTraiteurErr_dw = 0;
 

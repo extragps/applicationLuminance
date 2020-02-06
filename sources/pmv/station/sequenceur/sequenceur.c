@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <linux/reboot.h>
+#include <mq.h>
 #include "kcommon.h"
 #include "klog.h"
 #include "rdtComm.h"
@@ -29,7 +30,6 @@
 #include "sramMessage.h"
 
 #include "standard.h"
-#include "MQ.h"
 #include "mon_def.h"
 #include "mon_str.h"
 #include "mon_pro.h"
@@ -43,6 +43,7 @@
 #include "x01_var.h"
 #include "x01_vcth.h"
 #include "pmv/tac_ctrl.h"
+#include "lcr_trc.h"
 
 #define DEBUG 1
 
@@ -1032,6 +1033,10 @@ static int _sequenceurCtrlTemp(int depassement) {
 	return retour;
 }
 
+/* XG : Ajoute de maniere temporaire suite a la demande de Patrice de supprimer l'erreur defaut ALIM */
+
+static int _defAlim=0;
+
 static bool _sequenceur_status_temps_reel(Sequenceur *seq_pt) {
 	UINT8 stTrTemp_uc;
 	int indice;
@@ -1063,12 +1068,20 @@ static bool _sequenceur_status_temps_reel(Sequenceur *seq_pt) {
 		}
 	}
 
-	if (essDefautAlim()) {
-		defaut |= ST_TR_DEF_MIN;
-		eriAjouter(E_eriMineure, ERI_DEF_ALIM_AFF);
-	} else {
-		eriSupprimer(E_eriMineure, ERI_DEF_ALIM_AFF);
-	}
+		if (essDefautAlim()) {
+			defaut |= ST_TR_DEF_MIN;
+			/* XG : Suppression de l'erreur suite a une demande de patrice... */
+			if (0) {
+				eriAjouter(E_eriMineure, ERI_DEF_ALIM_AFF);
+			}
+			/* XG : Ajout d'une trace dans le fichier de trace... */
+			if(_defAlim!=essGetAlim()) {
+				_defAlim=essGetAlim();
+				cmd_trc_tr("Defaut alimentation afficheur %d",_defAlim);
+			}
+		} else {
+			eriSupprimer(E_eriMineure, ERI_DEF_ALIM_AFF);
+		}
 
 	if (!stationIsOk()) {
 		defaut |= ST_TR_DEF_MAJ;
@@ -1113,21 +1126,17 @@ static bool _sequenceur_status_temps_reel(Sequenceur *seq_pt) {
 		switch (nbPixHs_uc) {
 		case STATION_DEF_PIXEL_NONE:
 			if (seq_pt->etatAff_dw[indice] != SEQUENCEUR_ETAT_OK) {
-				eriSupprimerModuleVal(E_eriMajeure, ERI_DEF_PIXEL, numModule,
-						idCaisson, indice);
-				eriSupprimerModuleVal(E_eriMineure, ERI_DEF_PIXEL, numModule,
-						idCaisson, indice);
+				eriSupprimerModuleVal(E_eriMajeure, ERI_DEF_PIXEL, numModule, idCaisson, indice);
+				eriSupprimerModuleVal(E_eriMineure, ERI_DEF_PIXEL, numModule, idCaisson, indice);
 				seq_pt->etatAff_dw[indice] = SEQUENCEUR_ETAT_OK;
 			}
 			break;
 		case STATION_DEF_PIXEL_MINEUR:
 			if (seq_pt->etatAff_dw[indice] != SEQUENCEUR_DEFAUT_MINEUR) {
 				if (seq_pt->etatAff_dw[indice] == SEQUENCEUR_DEFAUT_MAJEUR) {
-					eriSupprimerModuleVal(E_eriMajeure, ERI_DEF_PIXEL,
-							numModule, idCaisson, indice);
+					eriSupprimerModuleVal(E_eriMajeure, ERI_DEF_PIXEL, numModule, idCaisson, indice);
 				}
-				eriAjouterModule(E_eriMineure, ERI_DEF_PIXEL, numModule,
-						idCaisson, indice);
+				eriAjouterModuleVal(E_eriMineure, ERI_DEF_PIXEL, numModule, idCaisson, indice);
 				seq_pt->etatAff_dw[indice] = SEQUENCEUR_DEFAUT_MINEUR;
 			}
 			defaut |= ST_TR_DEF_MIN;
@@ -1148,11 +1157,9 @@ static bool _sequenceur_status_temps_reel(Sequenceur *seq_pt) {
 				 * il si le caisson n'est pas eteint, on fait une
 				 * demande d'extinction. */
 				if (seq_pt->etatAff_dw[indice] == SEQUENCEUR_DEFAUT_MINEUR) {
-					eriSupprimerModuleVal(E_eriMineure, ERI_DEF_PIXEL,
-							numModule, idCaisson, indice);
+					eriSupprimerModuleVal(E_eriMineure, ERI_DEF_PIXEL,numModule, idCaisson, indice);
 				}
-				eriAjouterModule(E_eriMajeure, ERI_DEF_PIXEL, numModule,
-						idCaisson, indice);
+				eriAjouterModuleVal(E_eriMajeure, ERI_DEF_PIXEL, numModule,idCaisson, indice);
 				seq_pt->etatAff_dw[indice] = SEQUENCEUR_DEFAUT_MAJEUR;
 
 			}

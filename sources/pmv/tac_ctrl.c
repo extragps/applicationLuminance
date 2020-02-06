@@ -91,6 +91,8 @@
 #include "configurationSram.h"
 #include "sramMessage.h"
 #include "io/iolib.h"
+#include "cpu432/cpu432.h"
+#include "affichage/caractere.h"
 
 #define DEBUG 1
 
@@ -121,7 +123,6 @@ static int tac_ctrl_reactivation = FALSE;
 //{
 //	tacheSpawn("bpTest", 90, 0, 100, (FUNCPTR) tac_ctrl_bp_appui, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 //}
-
 static VOID tac_ctrl_aff_horo_date(VOID);
 static VOID tac_ctrl_relance(INT, INT);
 static VOID tac_ctrl_reactiver(VOID);
@@ -134,8 +135,7 @@ static VOID tac_ctrl_relance_secteur(VOID);
  *  gerer la duree des coupures secteur.
  */
 
-VOID tac_ctrl_coupure_secteur()
-{
+VOID tac_ctrl_coupure_secteur() {
 	Ktimestamp date_t;
 	ktsGetTime(&date_t);
 
@@ -150,10 +150,8 @@ VOID tac_ctrl_coupure_secteur()
  * FONCTIONS APPELEES   :
  * FONCTIONS APPELANTES :
  ***************************************************************************DOC*/
-VOID tac_ctrl_init(VOID)
-{
+VOID tac_ctrl_init(VOID) {
 	INT i;
-	INT init = FALSE;
 	BYTE reinit;
 	UINT val;
 	INT preinit = FALSE;
@@ -175,21 +173,16 @@ VOID tac_ctrl_init(VOID)
 
 	/* a priori il ne faudra pas sauve-
 	 * garder la config */
-		if (ioIsResetCfg())
-		{
-			init = TRUE;
+	if (cpu432SW1IsActive( IO_SWITCH_CFG )) {
 		eriAjouter(E_eriMineure, ERI_DEF_FORCAGE_CONFIG);
-		printDebug("tac_ctrl_init, Forcage de la configuration %#0x\n", val);
 		val = 1;
-		} else
-		{
-			init = FALSE;
+		printDebug("tac_ctrl_init, Forcage de la configuration %#0x\n", val);
+	} else {
 		val = 0;
-		}
+	}
 
 	/* Controle de l'entete */
-	switch (tac_conf_cfg_lec_entete())
-	{
+	switch (tac_conf_cfg_lec_entete()) {
 	case 0:
 		eriSupprimer(E_eriMajeure, ERI_DEF_CONFIG);
 		/* la config est bonne le numero de scenario egalement */
@@ -209,10 +202,9 @@ VOID tac_ctrl_init(VOID)
 		break;
 	}
 
-	if (val & 1)
-	{
+	if (val & 1) {
 		printDebug("rec_main_init : l'entete n'est meme pas bonne"
-			"ou il y a un forcage\n");
+				"ou il y a un forcage\n");
 		ksleep(50);
 		/* l'entete n'est meme pas bonne ou
 		 * il y a un forcage */
@@ -223,13 +215,10 @@ VOID tac_ctrl_init(VOID)
 		sauvegarde_config = TRUE;
 		/* Reinitialisation des fichiers
 		 * de traces et de mesures.     */
-	}
-    else
-	{
+	} else {
 		/* on controle la zone de config
 		 * application */
-		if (!tac_conf_cfg_lec_conf())
-		{
+		if (!tac_conf_cfg_lec_conf()) {
 			preinit = TRUE;
 			/* il faut sauvegarder la config */
 			sauvegarde_config = TRUE;
@@ -242,8 +231,7 @@ VOID tac_ctrl_init(VOID)
 
 	/* Traiter en cas de sram correcte... */
 
-	if (1)
-	{
+	if (1) {
 		Ktimestamp dateFin_t;
 		Ktimestamp dateDebut_t;
 		float64 diff_sect = 0;
@@ -257,37 +245,30 @@ VOID tac_ctrl_init(VOID)
 
 		/* Positionnement du delta */
 		/* Increment du compteur qui va bien */
-		if (diff_sect <= 1.)
-		{
+		if (diff_sect <= 1.) {
 			/* Increment du compteur secondes... */
 			configIncrCptUn();
-		} else if (diff_sect <= 1.)
-		{
+		} else if (diff_sect <= 1.) {
 			configIncrCptDix();
-		} else
-		{
+		} else {
 			/* Increment du compteur global... */
 			configIncrCptPlus();
 		}
-	}
-	 else
-	{
+	} else {
 		/* réaliser une initialisation des fichiers de trace... */
 	}
-
 
 	/* Calcul du checksum de l'appli-
 	 * cation.      */
 	{
-	unsigned long cks_prom= tac_conf_cfg_calculer_checksum_appli();
+		unsigned long cks_prom = tac_conf_cfg_calculer_checksum_appli();
 		/* Il faut controler le checksum de l'application.... */
-		vct_cks_prom_prom=vct_cks_prom;
-		if(cks_prom!=vct_cks_prom)
-		{
+		vct_cks_prom_prom = vct_cks_prom;
+		if (cks_prom != vct_cks_prom) {
 			/* Est ce une mise a jour de l'application??? 			 */
 			/* Sinon, il y a un probleme de checksum.... */
-			vct_cks_prom=cks_prom;
-			sauvegarde_config=TRUE;
+			vct_cks_prom = cks_prom;
+			sauvegarde_config = TRUE;
 			eriAjouter(E_eriMajeure, ERI_DEF_CKS_PROGRAMME);
 		}
 	}
@@ -300,33 +281,28 @@ VOID tac_ctrl_init(VOID)
 	 * necessaire... */
 	/* Increment des compteurs de restart
 	 * watchDog ou Restart */
-	 {
-	 	bool gar_b;
-
-	ioGetGar(&gar_b);
-	if(true==gar_b)
 	{
-		configIncrGar();
+		bool gar_b;
+
+		ioGetGar(&gar_b);
+		if (true == gar_b) {
+			configIncrGar();
+		}
 	}
-	 }
 	configIncrRst();
 
 	/* Preinitialisation eventuelle */
-	if (preinit)
-	{
+	if (preinit) {
 		tac_conf_cfg_raz_conf();
 		sauvegarde_config = TRUE;
 	}
 	/* endif(preinit                                        */
-	if(ioIsResetCfg())
-	{
+	if (ioIsResetCfg()) {
 		cf3_conf_memoire();
 		cf3_init_fic_tra();
 		/* Ajout de la premiere trace.... */
 		cmd_trc_tr("FORCAGE CONFIGURATION", NULL);
-	}
-	else if (-1==ficTraceTester())
-	{
+	} else if (-1 == ficTraceTester()) {
 		/* A faire surrement dans le cas du PMV */
 		cf3_conf_memoire();
 		cf3_init_fic_tra();
@@ -334,13 +310,11 @@ VOID tac_ctrl_init(VOID)
 		cmd_trc_tr("DEFAUT INTEGRITE BASE DETECTE", NULL);
 	}
 	/* si on doit sauvegarde la config */
-	if (sauvegarde_config)
-	{
+	if (sauvegarde_config) {
 		tac_conf_cfg_ecr_entete();
 		tac_conf_cfg_ecr_conf();
 		vct_conf = 0;
-	} else
-	{
+	} else {
 		trt_alt_tester_alerte();
 	}
 
@@ -353,12 +327,10 @@ VOID tac_ctrl_init(VOID)
 	 * forcer la sauvegarde de l'heure lorsque l'on detecte le
 	 * probleme. */
 	{
-		if (mnlcalSec() < 60)
-		{
+		if (mnlcalSec() < 60) {
 			mnecal(x01_date);
 		}
-		if (!dv1_test_date(x01_date))
-		{
+		if (!dv1_test_date(x01_date)) {
 			dv1_init_date();
 			/* on relie l'heure */
 			mnlcal(x01_date);
@@ -389,18 +361,15 @@ VOID tac_ctrl_init(VOID)
 	//		}
 	//
 	//	}
-
 	/* si on doit reinitialise */
-	if (reinit)
-	{
+	if (reinit) {
 		/* c'est une reinit */
 		configIncrReinit();
 	}
 
 	x01_status3.rebouclage = 0;
 
-	for (i = 0; i < NBPORT; i++)
-	{
+	for (i = 0; i < NBPORT; i++) {
 		x01_status3.tempo_mode_terminal[i] = 0;
 	}
 
@@ -420,12 +389,10 @@ VOID tac_ctrl_init(VOID)
 
 	x01_bat = 0;
 
-	if (pip_nb_module == 0)
-	{
+	if (pip_nb_module == 0) {
 		/* il n'y a pas de configuration chargee */
 		x01_cptr.configuration = FALSE;
-	} else
-	{
+	} else {
 		/* il n'y a une configuration */
 		x01_cptr.configuration = TRUE;
 	}
@@ -450,15 +417,12 @@ VOID tac_ctrl_init(VOID)
 
 }
 
-static void tac_ctrl_autotests_diodes(void)
-{
-	if (mnGetTempo(TP_TEST_DIODES) == TP_FINI)
-	{
+static void tac_ctrl_autotests_diodes(void) {
+	if (mnGetTempo(TP_TEST_DIODES) == TP_FINI) {
 		pipLonInitTest();
 		pipLonSetTest(1);
 	}
 }
-
 
 /*DOC-------------------------------------------------------------------------/
  / S.I.A.T.    |     FICHE DE FONCTION                                         /
@@ -471,8 +435,7 @@ static void tac_ctrl_autotests_diodes(void)
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : emission reception vers l'application                  /
  /-------------------------------------------------------------------------DOC*/
-INT tac_ctrl_emission(STRING buffer, INT nbcar)
-{
+INT tac_ctrl_emission(STRING buffer, INT nbcar) {
 	struct usr_ztf message;
 	T_usr_ztf *pt_message = &message;
 	mqd_t ancrage;
@@ -482,13 +445,12 @@ INT tac_ctrl_emission(STRING buffer, INT nbcar)
 	/* on indique l'adresse de retour */
 	pt_message = monMessInit(ancrage, &message);
 	message.nbcar_rec = nbcar;
-	strncpy((void *) message.buffer, (void *) buffer, min (nbcar, SZ_BLK * 2));
+	strncpy((void*) message.buffer, (void*) buffer, min(nbcar, SZ_BLK * 2));
 	message.nbcar_max = 30;
 	/* on emet le message sur l'ancrage interne */
 	monMessSend(x01_ancrage_interne, &pt_message, sizeof(pt_message));
 	/* on se met en attente sur l'ancrage de retour */
-	if(0!=monMessRec(ancrage, 5000, NULL))
-	{
+	if (0 != monMessRec(ancrage, 5000, NULL)) {
 	}
 	return (message.nbcar_max);
 }
@@ -504,47 +466,39 @@ INT tac_ctrl_emission(STRING buffer, INT nbcar)
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : affichage de l'heure ou de la temperature sur le panneau/                                /
  /-------------------------------------------------------------------------DOC*/
-static VOID tac_ctrl_aff_horo_date()
-{
+static VOID tac_ctrl_aff_horo_date() {
 
 	BYTE trv;
 	int k, j, i;
 	j = 0;
-	for (i = 0; i < pip_nb_module; i++)
-	{
+	for (i = 0; i < pip_nb_module; i++) {
 		T_pip_cf_module *module = &pip_cf_module[i];
 		/* si module alpha */
-		switch (pip_cf_caisson[i].type)
-		{
+		switch (pip_cf_caisson[i].type) {
 		case TYPE_ALPHA:
-			for (j = module->num_caisson; j < module->num_caisson + module->nb_caisson; j++)
-			{
+			for (j = module->num_caisson;
+					j < module->num_caisson + module->nb_caisson; j++) {
 				T_pip_sv_act_caisson caisson;
 				T_pip_sv_act_caisson *pip_sv_act_caisson = &caisson;
 				sramMessageLireCaisson(j, pip_sv_act_caisson);
 				trv = FALSE;
 
 				/* on recherche si il y a un message predefini */
-				for (k = 0; k < pip_sv_act_caisson->nbAlternance; k++)
-				{
-					if (pip_sv_act_caisson->type_predef[k] == TYPE_HR)
-					{
+				for (k = 0; k < pip_sv_act_caisson->nbAlternance; k++) {
+					if (pip_sv_act_caisson->type_predef[k] == TYPE_HR) {
 						trv = TRUE;
-					} else if (pip_sv_act_caisson->type_predef[k] == TYPE_DT0)
-					{
+					} else if (pip_sv_act_caisson->type_predef[k] == TYPE_DT0) {
 						trv = TRUE;
-					} else if (pip_sv_act_caisson->type_predef[k] == TYPE_DT1)
-					{
+					} else if (pip_sv_act_caisson->type_predef[k] == TYPE_DT1) {
 						trv = TRUE;
 					}
 				}
 
 				/* si il y a un message predefini on genere la commande */
-				if (trv)
-				{
-					if (pip_sv_act_caisson->validite != 0)
-					{
-						pip_sv_act_caisson->validite_dem = pip_sv_act_caisson->validite;
+				if (trv) {
+					if (pip_sv_act_caisson->validite != 0) {
+						pip_sv_act_caisson->validite_dem =
+								pip_sv_act_caisson->validite;
 					}
 					sramMessageEcrireCaisson(j, pip_sv_act_caisson);
 					activation_caisson(j);
@@ -566,36 +520,30 @@ static VOID tac_ctrl_aff_horo_date()
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : gestion des tempos seconde                             /
  /-------------------------------------------------------------------------DOC*/
-static int tac_ctrl_seconde()
-{
+static int tac_ctrl_seconde() {
 	INT i, j;
 	char buffer[100];
 	INT nbcar;
 	INT relance = FALSE;
 
 	/* les durees de validite pour la sauvegarde */
-	for (i = 0; i < NB_CAISSON; i++)
-	{
+	for (i = 0; i < NB_CAISSON; i++) {
 		T_pip_sv_act_caisson caisson;
 		T_pip_sv_act_caisson *pip_sv_act_caisson = &caisson;
 		sramMessageLireCaisson(i, pip_sv_act_caisson);
-		if (pip_sv_act_caisson->validite > 1)
-		{
+		if (pip_sv_act_caisson->validite > 1) {
 			pip_sv_act_caisson->validite--;
 			sramMessageEcrireCaisson(i, pip_sv_act_caisson);
 		}
 	}
 
 	/* pour tous les modules */
-	for (i = 0; i < pip_nb_module; i++)
-	{
+	for (i = 0; i < pip_nb_module; i++) {
 		T_pip_cf_module *module = &pip_cf_module[i];
 		/* surveillance du PC */
-		if (pip_act_module[i].spc != 0)
-		{
+		if (pip_act_module[i].spc != 0) {
 			pip_act_module[i].spc--;
-			if (pip_act_module[i].spc == 0)
-			{
+			if (pip_act_module[i].spc == 0) {
 				/* on met le panneau au neutre */
 				cmd_trc_mat(1, "EXT DEFAUT PC AM=%d ", module->id_module);
 
@@ -607,14 +555,11 @@ static int tac_ctrl_seconde()
 		}
 		/* les duree de validite */
 		j = module->num_caisson;
-		while (j < module->num_caisson + module->nb_caisson)
-		{
+		while (j < module->num_caisson + module->nb_caisson) {
 			/* validite */
-			if (pip_act_caisson[j].validite != 0L)
-			{
+			if (pip_act_caisson[j].validite != 0L) {
 				pip_act_caisson[j].validite--;
-				if (pip_act_caisson[j].validite == 0L)
-				{
+				if (pip_act_caisson[j].validite == 0L) {
 					T_pip_sv_act_caisson caisson;
 					T_pip_sv_act_caisson *pip_sv_act_caisson = &caisson;
 					sramMessageLireCaisson(j, pip_sv_act_caisson);
@@ -633,8 +578,7 @@ static int tac_ctrl_seconde()
 		/* on passe au module suivant */
 	}
 	/* pour l'interdiction du mode terminal */
-	for (i = 0; i < NBPORT; i++)
-	{
+	for (i = 0; i < NBPORT; i++) {
 		/* on decremente la tempo terminal */
 		if (x01_status3.tempo_mode_terminal[i])
 			x01_status3.tempo_mode_terminal[i]--;
@@ -653,26 +597,22 @@ static int tac_ctrl_seconde()
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : relance de l'affichage apres coupure secteur           /
  /-------------------------------------------------------------------------DOC*/
-static VOID tac_ctrl_relance(INT indCaisson, INT diff_sect)
-{
+static VOID tac_ctrl_relance(INT indCaisson, INT diff_sect) {
 	T_pip_sv_act_caisson caisson;
 	T_pip_sv_act_caisson *action = &caisson;
 	sramMessageLireCaisson(indCaisson, action);
 
-	if (action->nbAlternance && (!action->neutre))
-	{
+	if (action->nbAlternance && (!action->neutre)) {
 		/* si la duree de validite n'est pas infinie */
-		if (action->validite != 0)
-		{
+		if (action->validite != 0) {
 			/* Interpretation non parfaite de la commande car on
 			 * transforme la duree de validite d'origine.*/
-			printDebug("Test validite %d pour %d\n", diff_sect, action->validite);
-			if (diff_sect < action->validite)
-			{
+			printDebug("Test validite %d pour %d\n", diff_sect,
+					action->validite);
+			if (diff_sect < action->validite) {
 				printDebug("Validite demandee %d\n", action->validite_dem);
 				action->validite_dem = action->validite - (LONG) (diff_sect);
-			} else
-			{
+			} else {
 				action->validite = 0L;
 				action->nbAlternance = 0;
 				action->neutre = TRUE;
@@ -711,18 +651,15 @@ static VOID tac_ctrl_relance(INT indCaisson, INT diff_sect)
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : relance de l'affichage apres coupure secteur           /
  /-------------------------------------------------------------------------DOC*/
-VOID tac_ctrl_relance_secteur()
-{
+VOID tac_ctrl_relance_secteur() {
 	INT i;
-	for (i = 0; i < pip_nb_module; i++)
-	{
+	for (i = 0; i < pip_nb_module; i++) {
 		int j;
 		T_pip_cf_module *module = &pip_cf_module[i];
 		int num_caisson = module->num_caisson;
 		int nb_caisson = module->nb_caisson;
 
-		for (j = num_caisson; j < num_caisson + nb_caisson; j++)
-		{
+		for (j = num_caisson; j < num_caisson + nb_caisson; j++) {
 			tac_ctrl_relance(j, configGetDiffSect());
 		}
 	}
@@ -740,13 +677,11 @@ VOID tac_ctrl_relance_secteur()
  / BUT DE LA FONCTION : relance de l'affichage apres defaut                    /
  /-------------------------------------------------------------------------DOC*/
 
-void tac_ctrl_set_force(int val)
-{
+void tac_ctrl_set_force(int val) {
 	tac_ctrl_reactivation = val;
 }
 
-int tac_ctrl_get_force()
-{
+int tac_ctrl_get_force() {
 	return tac_ctrl_reactivation;
 }
 
@@ -758,34 +693,28 @@ int tac_ctrl_get_force()
  * elle et ses soeurs.
  * */
 
-VOID tac_ctrl_reactiver_force()
-{
+VOID tac_ctrl_reactiver_force() {
 	int i = 0;
 	printDebug("tac_ctrl_reactiver_force\n");
 	/* pour tous les modules */
 	tac_ctrl_set_force(FALSE);
-	for (i = 0; i < pip_nb_caisson; i++)
-	{
+	for (i = 0; i < pip_nb_caisson; i++) {
 		pip_act_caisson[i].relance_b = true;
 	}
 	tac_ctrl_reactiver();
 }
 
-static VOID tac_ctrl_reactiver()
-{
+static VOID tac_ctrl_reactiver() {
 	INT i;
 
-	for (i = 0; i < pip_nb_module; i++)
-	{
+	for (i = 0; i < pip_nb_module; i++) {
 		int j;
 		T_pip_cf_module *module = &pip_cf_module[i];
 		int num_caisson = module->num_caisson;
 		int nb_caisson = module->nb_caisson;
 
-		for (j = num_caisson; j < num_caisson + nb_caisson; j++)
-		{
-			if (pip_act_caisson[j].relance_b)
-			{
+		for (j = num_caisson; j < num_caisson + nb_caisson; j++) {
+			if (pip_act_caisson[j].relance_b) {
 				pip_act_caisson[j].relance_b = false;
 				tac_ctrl_relance(j, 1);
 			}
@@ -805,15 +734,11 @@ static VOID tac_ctrl_reactiver()
  /-----------------------------------------------------------------------------/
  / BUT DE LA FONCTION : relance de l'affichage apres defaut                    /
  /-------------------------------------------------------------------------DOC*/
-static VOID tac_ctrl_vt()
-{
+static VOID tac_ctrl_vt() {
 	BYTE i;
-	for (i = 0; i < NBPORT; i++)
-	{
-		if (xdg_vt[i].tempo != 0)
-		{
-			if (--xdg_vt[i].tempo == 0)
-			{
+	for (i = 0; i < NBPORT; i++) {
+		if (xdg_vt[i].tempo != 0) {
+			if (--xdg_vt[i].tempo == 0) {
 				xdg_vt[i].port = N_AFF;
 				xdg_vt[i].pt_in = 0;
 				xdg_vt[i].pt_out = 0;
@@ -829,8 +754,7 @@ static VOID tac_ctrl_vt()
  * memoire FLASH
  * --------------------------------	*/
 
-VOID tac_ctrl_valid_config()
-{
+VOID tac_ctrl_valid_config() {
 	printDebug("DEBUT ECRITURE CONFIGURATION %d \n\r", 0);
 	/* on annule la tempo de validation
 	 * de la configuration */
@@ -853,8 +777,7 @@ VOID tac_ctrl_valid_config()
  * FONCTIONS APPELEES   :
  * FONCTIONS APPELANTES :
  * */
-VOID tac_ctrl_main(int numero)
-{
+VOID tac_ctrl_main(int numero) {
 	BYTE i;
 	BYTE cptSec;
 	ULONG sec = 0;
@@ -866,8 +789,7 @@ VOID tac_ctrl_main(int numero)
 	mnsuspIniPrendre();
 	/* on met a l'heure */
 	mnlcal(x01_date);
-	if (!dv1_test_date(x01_date))
-	{
+	if (!dv1_test_date(x01_date)) {
 		dv1_init_date();
 		/* on relie l'heure */
 		mnlcal(x01_date);
@@ -888,12 +810,10 @@ VOID tac_ctrl_main(int numero)
 //		if (pip_sv_act_caisson_bcc != 0xFFFFFFFF)
 		{
 			INT nbActivation = 0;
-			for (i = 0; i < NB_CAISSON; i++)
-			{
+			for (i = 0; i < NB_CAISSON; i++) {
 				T_pip_sv_act_caisson cais;
-				sramMessageLireCaisson(i,&cais);
-				if (cais.nbAlternance)
-				{
+				sramMessageLireCaisson(i, &cais);
+				if (cais.nbAlternance) {
 					x01_cptr.activation_secteur = TRUE;
 					nbActivation++;
 				}
@@ -910,30 +830,28 @@ VOID tac_ctrl_main(int numero)
 
 	diffSect_udw = configGetDiffSect();
 	/* selon la duree de la coupure secteur */
-	if ((pip_cf_tst_sc.diff_sect > 0) && (pip_cf_tst_sc.diff_sect < diffSect_udw))
-	{
-		printf("Param %d diff_sect %d\n", pip_cf_tst_sc.diff_sect, diffSect_udw);
+	if ((pip_cf_tst_sc.diff_sect > 0)
+			&& (pip_cf_tst_sc.diff_sect < diffSect_udw)) {
+		printf("Param %d diff_sect %d\n", pip_cf_tst_sc.diff_sect,
+				diffSect_udw);
 		x01_cptr.activation_secteur = FALSE;
-	} else
-	{
+	} else {
 		printDebug("Pas d'activation secteur\n");
 	}
 
-	if (!x01_cptr.activation_secteur)
-	{
+	if (!x01_cptr.activation_secteur) {
 		/* Reinitialisation de la structure des actions!!! */
 		lcr_init_sv_act_pip();
 		x01_cptr.activation_secteur = TRUE;
 		//		configSetReactivationSurCoupure(false);
-		printf( "RELANCE NK DUREE COUPURE %06lu sec\n", diffSect_udw);
+		printf("RELANCE NK DUREE COUPURE %06lu sec\n", diffSect_udw);
 		cmd_trc_mat(1, "RELANCE NK DUREE COUPURE %06lu sec", diffSect_udw);
-	} else
-	{
+	} else {
 		/* la sauvegarde est bonne */
 		//		configSetReactivationSurCoupure(true);
 		/* on trace la relance */
 		cmd_trc_mat(1, "RELANCE OK DUREE COUPURE %06lu sec", diffSect_udw);
-		printf( "RELANCE OK DUREE COUPURE %06lu sec\n", diffSect_udw);
+		printf("RELANCE OK DUREE COUPURE %06lu sec\n", diffSect_udw);
 	}
 
 	/* on initialise la tempo de reprise secteur */
@@ -949,13 +867,11 @@ VOID tac_ctrl_main(int numero)
 	/* on demarre */
 
 	cptSec = 0;
-	while (1)
-	{
+	while (1) {
 		int changeSec = FALSE;
 		int relance = FALSE;
 		/* TODO : Il faut proceder autremement pour la boucle. */
-		if (x01_status3.strapRebouclage)
-		{
+		if (x01_status3.strapRebouclage) {
 			/* on force le rebouclage  */
 			x01_status3.rebouclage = 1;
 		}
@@ -975,8 +891,7 @@ VOID tac_ctrl_main(int numero)
 		 mnrestart ();
 		 printDebug ("Apres mnrestart\n");
 		 } */
-		if (mnGetTempo(TP_VALID_CONFIG) == TP_FINI)
-		{
+		if (mnGetTempo(TP_VALID_CONFIG) == TP_FINI) {
 			printDebug("Avant rec_main_alid\n");
 			tac_ctrl_valid_config();
 			printDebug("Apres rec_main_valid\n");
@@ -985,8 +900,7 @@ VOID tac_ctrl_main(int numero)
 
 		/* if (DEMARRAGE_OK == x01_cptr.demarrage) */
 		{
-			if (bpTest())
-			{
+			if (bpTest()) {
 				tac_ctrl_set_force(TRUE);
 			}
 		}
@@ -994,15 +908,13 @@ VOID tac_ctrl_main(int numero)
 		/* Pour detection du changement de seconde */
 		{
 			ULONG secCour = mnlcalSec();
-			if (secCour != sec)
-			{
+			if (secCour != sec) {
 				sec = secCour;
 				changeSec = TRUE;
 				rqflc2 = TRUE; /* Pour temporisation de la tache lon */
 			}
 		}
-		if (changeSec)
-		{
+		if (changeSec) {
 //			tac_ctrl_io();
 //			tac_ctrl_status_temps_reel(); /* on traite le status temps reel */
 //			tac_ctrl_autotests_diodes();
@@ -1010,8 +922,7 @@ VOID tac_ctrl_main(int numero)
 			//			if (lon_status.secteur == TEMPO_ATTENTE_SECTEUR)
 			{
 				/* on decremente les tempo de surveillance de la transmission */
-				for (i = 0; i < pip_nb_caisson; i++)
-				{
+				for (i = 0; i < pip_nb_caisson; i++) {
 					/* si la tempo n'est pas nulle on la decremente */
 					if (pip_act_caisson[i].cpt_attente_relance)
 						pip_act_caisson[i].cpt_attente_relance--;
@@ -1031,7 +942,6 @@ VOID tac_ctrl_main(int numero)
 				//						}
 				//					}
 				//				}
-
 				/* pour la commande VT */
 				tac_ctrl_vt();
 
@@ -1095,8 +1005,7 @@ VOID tac_ctrl_main(int numero)
 			/* Toute les secondes, on ecrit la nouvelle date dans la sram. */
 			tac_ctrl_coupure_secteur();
 		} /* endif (changeSec) */
-if (relance)
-		{
+		if (relance) {
 			tac_ctrl_reactiver();
 		}
 		etaSystIncrCompteur(numero);

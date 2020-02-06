@@ -18,6 +18,7 @@
  * ********************************	*/
 
 #include <string.h>
+#include <superviseur.h>
 #include "portage.h"
 #include "stdio.h"
 #include "standard.h"
@@ -34,7 +35,6 @@
 #include "tac_conf.h"
 #include "lcr_util.h"
 #include "etaSyst.h"
-#include "Superviseur.h"
 #include "io/iolib.h"
 
 /* ********************************

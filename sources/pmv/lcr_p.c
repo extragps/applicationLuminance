@@ -695,12 +695,10 @@ static int activation_caisson_reelle(INT indCaisson, T_pip_sv_act_caisson *sv_ac
 	STRING ptr_buffer;
 	int retour = 0;
 
-	if (0 == sv_action->validite_fin)
-	{
-		eriSupprimerModule(E_eriMineure, ERI_DEF_FIN_VALIDITE, caisson->id_module, caisson->caisson);
-	} else
-	{
-		eriAjouterModule(E_eriMineure, ERI_DEF_FIN_VALIDITE, caisson->id_module, caisson->caisson, 255);
+	if( 0 == sv_action->validite_fin ) {
+		eriSupprimerModuleVal( E_eriMineure, ERI_DEF_FIN_VALIDITE, caisson->id_module, caisson->caisson, 255 );
+	} else {
+		eriAjouterModuleVal( E_eriMineure, ERI_DEF_FIN_VALIDITE, caisson->id_module, caisson->caisson, 255 );
 	}
 
 	/* Recuperation de l'action courante. */

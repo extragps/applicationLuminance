@@ -27,8 +27,6 @@ void configInit(void);
 void configTerm(void);
 void configParamInit(void);
 void configParamTerm(void);
-bool configLoad(void);
-void configSave(void);
 void configInitStatique(void);
 void configStatiqueSet(void *config_p);
 void configStatiqueGet(void *config_p);
@@ -102,6 +100,8 @@ bool 	configSetPaddingBefore(int32 pad_dw);
 int32 	configGetPaddingBefore(void);
 bool 	configSetPaddingAfter(int32 pad_dw);
 int32 	configGetPaddingAfter(void);
+bool 	configSetModeDegrade(uint16 pad_dw);
+uint16 	configGetModeDegrade(void);
 
 void configSetSurbDyn(bool val);
 void configSetNuitDyn(bool val);

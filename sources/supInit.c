@@ -44,8 +44,9 @@
  * LISTE DES INCLUDES
  * ******************************* */
 
-#include "Superviseur.h"
-#include "Semaphore.h"
+#include <pipe.h>
+#include <superviseur.h>
+#include "semaphore.h"
 #include "standard.h"
 #include "mon_inc.h"
 #include "define.h"
@@ -54,7 +55,6 @@
 #include "xdg_var.h"
 #include "mon_ext.h"
 #include "rec_main.h"
-#include "Pipe.h"
 #include "mon_debug.h"
 #include "mon_str.h"
 #include "mon_pro.h"

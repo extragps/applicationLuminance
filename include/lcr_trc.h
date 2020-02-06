@@ -36,7 +36,7 @@
 void cmd_trc_mat(INT trace, STRING format, ...);
 VOID lcr_trace_tr(INT, INT, INT, STRING, INT, struct usr_ztf *);
 VOID lcr_trace_m(INT, INT, INT, STRING, INT, struct usr_ztf *);
-VOID cmd_trc_tr(char *, ...);
+void cmd_trc_tr(char *, ...);
 VOID cmd_trc_int108(INT, STRING, INT);
 VOID lcr_trace_silhouette(INT las, INT mode, INT lg_mess, STRING buffer, INT position, struct usr_ztf *pt_mess);
 VOID cmd_trc_silhouette(INT k);

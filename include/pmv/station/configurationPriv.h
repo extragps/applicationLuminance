@@ -6,9 +6,6 @@
 
 typedef struct _ConfigStatiqueConfigStatiqueConfigStatiqu
 {
-//	int32 numCaisson;
-//	int32 numMsg1;
-//	int32 numMsg2;
 	int32 seuilJour_dw;
 	int32 seuilSurb_dw;
 	int32 tempoTest_dw;
@@ -33,17 +30,16 @@ typedef struct _ConfigStatiqueConfigStatiqueConfigStatiqu
 	int32 modeThl[THL_NB_MAX];
 	int32 adresseEs;
 	int32 periodeTestPixel_dw;
-//	uint8 *adresseBsc_pt;
-//	bool demarrage_b;ConfigStatique
-//	int32 vitesseLas1_dw;
-//	int32 vitesseLas2_dw;
 	int32 numPort_dw;
-//	int32 scrutationPC_dw;
 	int32 seuilChauffage_dw;
-//	int32 scrutationMaint_dw;
-//	int32 scrutationIp_dw;
-	int32 paddingBefore_dw;
-	int32 paddingAfter_dw;
+	/* Attention, petite astuce pour ne pas modifier la structure de la configuration, les
+	 * champs de padding ont ete passes a 16 bits pour pouvoir integrer le modeDegrade.
+	 * Du coup, il reste 16 bits inutilises.
+	 */
+	uint16 modeDegrade_uw;
+	uint16 paddingBefore_uw;
+	uint16 unused_uw;
+	uint16 paddingAfter_uw;
 
 } ConfigStatique;
 

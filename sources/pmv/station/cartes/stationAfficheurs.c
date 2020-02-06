@@ -295,22 +295,22 @@ Afficheur *afficheursChercherParAdresse(int adresse)
 	return aff_pt;
 }
 
-static bool _afficheursControlerChargementCaisson(int numCaisson)
-{
-bool retour_b=true;
-int32 premCar=configGetPremAfficheurCaisson(numCaisson);
-int32 nbCarCaisson=configGetNbAfficheursCaisson(numCaisson);
-int32 indice=0;
-	for(indice=0;(indice<nbCarCaisson)&&(true==retour_b);indice++)
-	{
-	Afficheur *aff_pt=afficheurTable[premCar+indice];
-		retour_b&=afficheurIsLoaded(aff_pt)||
-			((afficheurIsDefautCom(aff_pt)||afficheurIsDefautCarte(aff_pt)
-			||afficheurIsDefautTsd(aff_pt))&&configIsRebouclage());
-	}
-
-	return retour_b;
-}
+//static bool _afficheursControlerChargementCaisson(int numCaisson)
+//{
+//bool retour_b=true;
+//int32 premCar=configGetPremAfficheurCaisson(numCaisson);
+//int32 nbCarCaisson=configGetNbAfficheursCaisson(numCaisson);
+//int32 indice=0;
+//	for(indice=0;(indice<nbCarCaisson)&&(true==retour_b);indice++)
+//	{
+//	Afficheur *aff_pt=afficheurTable[premCar+indice];
+//		retour_b&=afficheurIsLoaded(aff_pt)||
+//			((afficheurIsDefautCom(aff_pt)||afficheurIsDefautCarte(aff_pt)
+//			||afficheurIsDefautTsd(aff_pt))&&configIsRebouclage());
+//	}
+//
+//	return retour_b;
+//}
 
 bool afficheursControlerChargement()
 {

@@ -52,10 +52,12 @@
 #include "sir_dv1h.h"
 #include "x01_str.h"
 #include "x01_var.h"
+#include "x01_vcth.h"
 #include "tac_conf.h"
 #include "lcr_sc.h"
 #include "identLib.h"
 #include "configuration.h"
+#include "lcr_pcp_cmd.h"
 
 /**********************************************************/
 /*                                                        */
@@ -577,6 +579,82 @@ LOCAL VOID lcr_cmd_tst_sc (STRING buffer,INT nbcar)
 /-----------------------------------------------------------------------------/
 / BUT DE LA FONCTION : execution de la commande INIT                          /
 /-------------------------------------------------------------------------DOC*/
+static int _lcr_tst_cfsc (INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_ztf * pt_mess,STRING commande_ac)
+{
+  INT  j;
+  int config=FALSE;
+  int lgCommande=strlen(commande_ac);
+
+      /* taille indique le nombre de caracteres du parametre */
+	if (lg_mess > lgCommande) {
+		if (identLireAutorisationAvecNiveau(las, 0)) {
+			config = TRUE;
+			lcr_cmd_tst_sc(&buffer[lgCommande], lg_mess - lgCommande);
+		} else {
+			x01_cptr.erreur = CPTRD_PROTOCOLE;
+		}
+	}
+
+  if (x01_cptr.erreur == CPTRD_OK)
+    {
+	int bloc=0;
+      /* on retourne les parametres */
+      j=0;
+      j +=
+        sprintf (&buffer[j], "%s DP1=%ld DP2=%ld ",
+        		commande_ac,
+                    configGetSeuilAffPixelMin(),
+                    configGetSeuilAffPixelMax());
+
+      j +=
+        sprintf (&buffer[j], " SLJ=%ld SLS=%ld",
+        	configGetSeuilJour(),
+        	configGetSeuilSurb());
+
+      j +=
+        sprintf (&buffer[j], " SCE=%ld SCT=%ld SCA=%ld",
+        	configGetPollingEs(),
+        	configGetPollingSonde(),
+        	configGetPollingAff());
+      j +=
+        sprintf (&buffer[j], " PAB=%ld PAA=%ld",
+        	configGetPaddingBefore(),
+        	configGetPaddingAfter());
+
+      tedi_send_bloc (las, mode, buffer, j, bloc, FALSE, pt_mess);
+	  bloc++;
+      j = 0;
+      j += sprintf (&buffer[j], " SPC=%d",vct_tempo_spc);
+      j += sprintf (&buffer[j], " SEC=%d", pip_cf_tst_sc.diff_sect);
+      j += sprintf (&buffer[j], " IPP=%ld", configGetNumPortIp());
+      j += sprintf (&buffer[j], " REB=%ld", (configIsRebouclage()?1:0));
+
+//      j += dv1_sprintf (&buffer[j], " MOD=%d", pip_cf_tst_sc.mode);
+
+      /* periode de controle des cellules */
+      j += sprintf (&buffer[j], " TAC=%d", pip_cf_tst_sc.temp.actif);
+      j += sprintf (&buffer[j], " TSE=%d", pip_cf_tst_sc.temp.seuil);
+      j += sprintf (&buffer[j], " TCH=%ld", configGetTemperatureChauffage());
+      j += sprintf (&buffer[j], " TTE=%d", pip_cf_tst_sc.temp.tempo);
+      j += sprintf (&buffer[j], " AUT=%d", configGetPeriodeTestPixel());
+	  if(-1!=pip_cf_tst_sc.ts_bp_test)
+	  {
+      j += sprintf (&buffer[j], " RBP=%d", pip_cf_tst_sc.ts_bp_test);
+	  }
+	  else
+	  {
+      	j += sprintf (&buffer[j], " RBP=?");
+	  }
+
+      tedi_send_bloc (las, mode, buffer, j, bloc, TRUE, pt_mess);
+    }
+  else
+    {
+	  config=FALSE;
+      tedi_erreur (las, mode);
+    }
+   return config;
+}
 int lcr_tst_sc_pmv (INT las, INT mode, INT lg_mess, STRING buffer,
                      INT position, T_usr_ztf * pt_mess)
 {
@@ -655,4 +733,13 @@ int lcr_tst_sc_pmv (INT las, INT mode, INT lg_mess, STRING buffer,
       tedi_erreur (las, mode);
     }
    return config;
+}
+
+int lcr_tst_scc (INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_ztf * pt_mess)
+{
+	return _lcr_tst_cfsc(las,mode,lg_mess,buffer,position,pt_mess,LCR_PCP_TST_SCC);
+}
+int lcr_tst_cfsc (INT las, INT mode, INT lg_mess, STRING buffer, INT position, T_usr_ztf * pt_mess)
+{
+	return _lcr_tst_cfsc(las,mode,lg_mess,buffer,position,pt_mess,LCR_PCP_TST_CFSC);
 }

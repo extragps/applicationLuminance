@@ -39,11 +39,12 @@
  * LISTE DES INCLUDES
  * ********************************	*/
 
+#include <pipe.h>
+#include <superviseur.h>
 #include "stdarg.h"
 #include "config.h"
-#include "Superviseur.h"
 #include "time.h"
-#include "Semaphore.h"
+#include "semaphore.h"
 #include "standard.h"                  /* redefinition des types            */
 #include "mon_inc.h"
 #include "define.h"                    /* definition des constantes         */
@@ -53,7 +54,6 @@
 #include "x01_vcth.h"
 #include "xdg_var.h"
 #include "rec_main.h"
-#include "Pipe.h"
 #include "mon_debug.h"
 #include "supInitLib.h"
 #include "supRun.h"

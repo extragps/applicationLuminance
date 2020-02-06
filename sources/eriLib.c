@@ -56,9 +56,8 @@ static T_eriList *eri = &eriList;
  * FONCTIONS DU MODULE
  * ********************************	*/
 
-static BOOL eriChercherIndex(char, char, int *);
-static BOOL eriChercherModuleIndex(char, char, unsigned char, unsigned char, int *);
-static BOOL _eriChercherModuleIndexVal(char grav, char nature, unsigned char mod, unsigned char cais, int val,
+static bool eriChercherIndex(char, char, int *);
+static bool _eriChercherModuleIndexVal(char grav, char nature, unsigned char mod, unsigned char cais, int val,
 		int *index);
 
 /* --------------------------------
@@ -112,17 +111,12 @@ static void eriPrint(int index)
 	printDebug("\n");
 }
 
-static void _eriSupprimerIndex(int eriCour)
+static void _eriSupprimerIndex( int eriCour )
 {
 	eri->nbData--;
-	for (; eriCour < eri->nbData; eriCour++)
-	{
+	for( ; eriCour < eri->nbData; eriCour++ ) {
 		eri->data[eriCour] = eri->data[eriCour + 1];
 	}
-	//     if(force)
-	//     {
-	//    	 _eriSauver();
-	//     }
 }
 
 /* --------------------------------
@@ -138,9 +132,9 @@ static void _eriSupprimerIndex(int eriCour)
  * - 	module, caisson et valeur
  * --------------------------------	*/
 
-void eriAjouterModule(char grav, char nature, unsigned char mod, unsigned char cais, int val)
+bool eriAjouterModuleVal(char grav, char nature, unsigned char mod, unsigned char cais, int val)
 {
-	eriSupprimerModuleVal(grav, nature, mod, cais,val);
+	bool trouve_b=eriSupprimerModuleVal(grav, nature, mod, cais,val);
 	/* Ajout de la nouvelle erreur          */
 	if (eri->nbData < ERI_MAX_DATA)
 	{
@@ -155,6 +149,8 @@ void eriAjouterModule(char grav, char nature, unsigned char mod, unsigned char c
 	/* --------------------------------
 	 * FIN DE eriAjouter
 	 * --------------------------------     */
+	/* L'alarme est nouvelle */
+	return !trouve_b;
 }
 
 /* --------------------------------
@@ -162,39 +158,43 @@ void eriAjouterModule(char grav, char nature, unsigned char mod, unsigned char c
  * ================
  * --------------------------------	*/
 
-void eriSupprimerModuleVal(char grav, char nature, unsigned char mod, unsigned char cais, int val)
+bool eriSupprimerModuleVal(char grav, char nature, unsigned char mod, unsigned char cais, int val)
 {
+	bool retour_b=false;
 	int eriCour = eri->nbData;
 
-	int trouve = _eriChercherModuleIndexVal(grav, nature, mod, cais, val, &eriCour);
+	bool trouve = _eriChercherModuleIndexVal(grav, nature, mod, cais, val, &eriCour);
 	/* --------------------------------
 	 * SUPPRESSION EVENTUELLE
 	 * --------------------------------     */
-	if (trouve)
+	if (true==trouve)
 	{
 		_eriSupprimerIndex(eriCour);
+		retour_b=true;
 	}
 	/* --------------------------------
 	 * FIN DE eriAjouter
 	 * --------------------------------     */
+	return retour_b;
 }
-
-void eriSupprimerModule(char grav, char nature, unsigned char mod, unsigned char cais)
-{
-	int eriCour = eri->nbData;
-
-	int trouve = eriChercherModuleIndex(grav, nature, mod, cais, &eriCour);
-	/* --------------------------------
-	 * SUPPRESSION EVENTUELLE
-	 * --------------------------------     */
-	if (trouve)
-	{
-		_eriSupprimerIndex(eriCour);
-	}
-	/* --------------------------------
-	 * FIN DE eriAjouter
-	 * --------------------------------     */
-}
+//
+//bool eriSupprimerModule(char grav, char nature, unsigned char mod, unsigned char cais)
+//{
+//	bool trouve_b=false;
+//	int eriCour = eri->nbData;
+//
+//	trouve_b = eriChercherModuleIndex(grav, nature, mod, cais, &eriCour);
+//	/* --------------------------------
+//	 * SUPPRESSION EVENTUELLE
+//	 * --------------------------------     */
+//	if (trouve_b) {
+//		_eriSupprimerIndex(eriCour);
+//	}
+//	/* --------------------------------
+//	 * FIN DE eriSupprimerModule
+//	 * --------------------------------     */
+//	return trouve_b;
+//}
 
 /* --------------------------------
  * eriAjouter
@@ -206,9 +206,9 @@ void eriSupprimerModule(char grav, char nature, unsigned char mod, unsigned char
  * -	nature de l'erieur.
  * --------------------------------	*/
 
-void eriAjouter(char grav, char nature)
+bool eriAjouter(char grav, char nature)
 {
-	eriSupprimer(grav, nature);
+	bool trouve_b=eriSupprimer(grav, nature);
 	if (eri->nbData < ERI_MAX_DATA)
 	{
 		eri->data[eri->nbData].grav = grav;
@@ -218,6 +218,7 @@ void eriAjouter(char grav, char nature)
 		eri->nbData++;
 	}
 	//  _eriSauver();
+	return !trouve_b;
 }
 
 /* --------------------------------
@@ -226,7 +227,7 @@ void eriAjouter(char grav, char nature)
  * Recherche d'une erreur dans la liste
  * --------------------------------	*/
 
-BOOL eriChercher(char grav, char nature)
+bool eriChercher(char grav, char nature)
 {
 	int eriCour;
 	return eriChercherIndex(grav, nature, &eriCour);
@@ -239,10 +240,10 @@ BOOL eriChercher(char grav, char nature)
  * Recherche d'une erreur dans la liste
  * --------------------------------	*/
 
-static BOOL eriChercherIndex(char grav, char nature, int *index)
+static bool eriChercherIndex(char grav, char nature, int *index)
 {
 	int eriCour;
-	BOOL trouve = FALSE;
+	bool trouve = false;
 
 	for (eriCour = 0; eriCour < eri->nbData; eriCour++)
 	{
@@ -250,7 +251,7 @@ static BOOL eriChercherIndex(char grav, char nature, int *index)
 		{
 			eriPrint(eriCour);
 			*index = eriCour;
-			trouve = TRUE;
+			trouve = true;
 			break;
 		} /* endif((grav== */
 	} /* endfor(eriCour */
@@ -267,30 +268,30 @@ static BOOL eriChercherIndex(char grav, char nature, int *index)
  * Recherche d'une erreur dans la liste
  * pour un module et un index donne.
  * --------------------------------	*/
-
-static BOOL eriChercherModuleIndex(char grav, char nature, unsigned char mod, unsigned char cais, int *index)
-{
-	int eriCour;
-	BOOL trouve = FALSE;
-
-	for (eriCour = 0; eriCour < eri->nbData; eriCour++)
-	{
-
-		if ((grav == eri->data[eriCour].grav) && (nature == eri->data[eriCour].nature) && (mod
-				== eri->data[eriCour].module) && (cais == eri->data[eriCour].caisson))
-		{
-			eriPrint(eriCour);
-			*index = eriCour;
-			trouve = TRUE;
-			break;
-		} /* endif((grav== */
-	} /* endfor(eriCour */
-	/* --------------------------------
-	 * FIN DE eriChercher
-	 * --------------------------------     */
-	return trouve;
-
-}
+//
+//static bool eriChercherModuleIndex(char grav, char nature, unsigned char mod, unsigned char cais, int *index)
+//{
+//	int eriCour;
+//	bool trouve = false;
+//
+//	for (eriCour = 0; eriCour < eri->nbData; eriCour++)
+//	{
+//
+//		if ((grav == eri->data[eriCour].grav) && (nature == eri->data[eriCour].nature) && (mod
+//				== eri->data[eriCour].module) && (cais == eri->data[eriCour].caisson))
+//		{
+//			eriPrint(eriCour);
+//			*index = eriCour;
+//			trouve = true;
+//			break;
+//		} /* endif((grav== */
+//	} /* endfor(eriCour */
+//	/* --------------------------------
+//	 * FIN DE eriChercher
+//	 * --------------------------------     */
+//	return trouve;
+//
+//}
 
 /* --------------------------------
  * eriChercherModuleIndex
@@ -299,22 +300,20 @@ static BOOL eriChercherModuleIndex(char grav, char nature, unsigned char mod, un
  * pour un module et un index donne.
  * --------------------------------	*/
 
-static BOOL _eriChercherModuleIndexVal(char grav, char nature, unsigned char mod, unsigned char cais, int val,
-		int *index)
+static bool _eriChercherModuleIndexVal( char grav, char nature, unsigned char mod, unsigned char cais, int val,
+   int *index )
 {
 	int eriCour;
-	BOOL trouve = FALSE;
+	bool trouve = false;
 
-	for (eriCour = 0; eriCour < eri->nbData; eriCour++)
-	{
+	for( eriCour = 0; eriCour < eri->nbData; eriCour++ ) {
 
-		if ((grav == eri->data[eriCour].grav) && (nature == eri->data[eriCour].nature) && (mod
-				== eri->data[eriCour].module) && (val == eri->data[eriCour].valeur) && (cais
-				== eri->data[eriCour].caisson))
-		{
-			eriPrint(eriCour);
+		if( ( grav == eri->data[eriCour].grav ) && ( nature == eri->data[eriCour].nature )
+		   && ( mod == eri->data[eriCour].module ) && ( val == eri->data[eriCour].valeur )
+		   && ( cais == eri->data[eriCour].caisson ) ) {
+			eriPrint( eriCour );
 			*index = eriCour;
-			trouve = TRUE;
+			trouve = true;
 			break;
 		} /* endif((grav== */
 	} /* endfor(eriCour */
@@ -335,20 +334,23 @@ static BOOL _eriChercherModuleIndexVal(char grav, char nature, unsigned char mod
  * -	nature de l'erieur.
  * --------------------------------	*/
 
-void eriSupprimer(char grav, char nature)
+bool eriSupprimer(char grav, char nature)
 {
+	bool retour_b=false;
 	int eriCour;
 
 	/* --------------------------------
 	 * SUPPRESSION EVENTUELLE
 	 * --------------------------------     */
-	if (eriChercherIndex(grav, nature, &eriCour) == TRUE)
+	if (eriChercherIndex(grav, nature, &eriCour) == true)
 	{
 		_eriSupprimerIndex(eriCour);
+		retour_b=true;
 	}
 	/* --------------------------------
 	 * FIN DE eriSupprimer
 	 * --------------------------------     */
+	return retour_b;
 }
 
 /* --------------------------------

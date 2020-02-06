@@ -1,11 +1,11 @@
 /*
- * Pipe.h
+ * pipe.h
  * ===================
  *
  *  Created on: 24 juin 2008
  *      Author: $Author: xg $
  * --------------------------------------------------------
- * $Log: Pipe.h,v $
+ * $Log: pipe.h,v $
  * Revision 1.2  2018/06/04 08:38:40  xg
  * Passage en version V122
  *

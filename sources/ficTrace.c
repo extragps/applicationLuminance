@@ -313,23 +313,22 @@ static int _ficTraceSupprimerEnreg(int indexFichier, T_zdf *info) //struct zdf *
 	return retour;
 
 }
-static void				printEnreg(int fichier,T_ficTraceEnreg *enregPrec)
-{
-	printDebug("Enreg fichier %d\n",fichier);
-	printDebug("Suiv : %#0lx\n",(long unsigned int)enregPrec->suiv);
-	printDebug("Prec : %#0lx\n",(long unsigned int)enregPrec->prec);
-}
+//static void				printEnreg(int fichier,T_ficTraceEnreg *enregPrec)
+//{
+//	printDebug("Enreg fichier %d\n",fichier);
+//	printDebug("Suiv : %#0lx\n",(long unsigned int)enregPrec->suiv);
+//	printDebug("Prec : %#0lx\n",(long unsigned int)enregPrec->prec);
+//}
 
-static bool _ficTraceControlerPointeur(T_zdf *info,char *pointeur_pt)
+static bool _ficTraceControlerPointeur( T_zdf *info, char *pointeur_pt )
 {
-int tailleMax = info->max_seq * info->sz_enr;
-char *fin = ((char *) info->pt_deb) + tailleMax;
-bool retour_b=true;
-	if((pointeur_pt<info->pt_deb)||(pointeur_pt>=fin))
-	{
-		printDebug("_ficTraceControlerPointeur : probleme %0x pour deb %0x et fin %0x\n",
-				pointeur_pt,(unsigned int)info->pt_deb,fin);
-		retour_b=false;
+	int tailleMax = info->max_seq * info->sz_enr;
+	char *fin = ( (char*) info->pt_deb ) + tailleMax;
+	bool retour_b = true;
+	if( ( pointeur_pt < info->pt_deb ) || ( pointeur_pt >= fin ) ) {
+		printDebug( "_ficTraceControlerPointeur : probleme %0x pour deb %0x et fin %0x\n", pointeur_pt,
+		   (unsigned int) info->pt_deb, fin );
+		retour_b = false;
 	}
 	return retour_b;
 }
@@ -639,7 +638,6 @@ void ficTraceImprimer(INT las, INT mode, STRING buffer, INT * nbCar, INT * bloc,
 	if (nombre)
 	{
 		dateFinOk = dateDebOk;
-		dateFin = dateFin;
 		dateDebOk = 0;
 	}
 	/* Initialisation de la structure

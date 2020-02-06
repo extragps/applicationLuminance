@@ -19,9 +19,9 @@
  * LISTE DES INCLUDES
  * ******************************** */
 
+#include <superviseur.h>
 #include "standard.h"
 #include "Tache.h"
-#include "Superviseur.h"
 #include "kcommon.h"
 #include "portage.h"
 #include "Tache.h"

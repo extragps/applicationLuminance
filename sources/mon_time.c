@@ -4,6 +4,7 @@
  *  Created on: 13 oct. 2010
  *      Author: xavier
  */
+#include <pipe.h>
 #include <termios.h>
 #include <unistd.h>
 #include <string.h>
@@ -34,7 +35,6 @@
 #include "ypc_las.h"
 #include "tac_ctrl.h"
 
-#include "Pipe.h"
 #include "mon_debug.h"
 #include "mon_def.h"
 #include "semLib.h"

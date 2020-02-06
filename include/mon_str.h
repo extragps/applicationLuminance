@@ -4,11 +4,11 @@
 
 #ifdef VXWORKS
 #include "vxworks.h"
-#include "MQ.h"
+#include "mq.h"
 #endif
 
 #ifdef LINUX
-#include "MQ.h"
+#include "mq.h"
 #endif
 
 #include "standard.h"

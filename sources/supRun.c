@@ -34,7 +34,7 @@
  * FICHIERS D'INCLUSION
  * ********************************** */
 
-#include "Superviseur.h"
+#include <superviseur.h>
 #include "Tache.h"
 #include "standard.h"
 #include "supRun.h"
